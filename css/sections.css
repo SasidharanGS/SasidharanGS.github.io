@@ -1,0 +1,113 @@
+section {
+  padding: var(--space-xl) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.section__label {
+  font-size: 0.65rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  margin-bottom: var(--space-lg);
+  display: block;
+}
+
+/* About */
+.about__bio {
+  font-size: 1.05rem;
+  font-weight: var(--fw-light);
+  line-height: 1.7;
+  max-width: 560px;
+  color: var(--fg);
+}
+
+/* Projects */
+.projects__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
+}
+
+.project-card {
+  padding: var(--space-md) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.project-card__name {
+  font-size: 0.85rem;
+  font-weight: var(--fw-reg);
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-xs);
+}
+
+.project-card__desc {
+  font-size: 0.8rem;
+  font-weight: var(--fw-light);
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: var(--space-sm);
+}
+
+.project-card__links {
+  display: flex;
+  gap: var(--space-md);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+.project-card__links a:hover { color: var(--fg); }
+
+/* Experience */
+.experience__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 560px;
+}
+
+.exp-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-sm);
+  align-items: start;
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--rule);
+}
+
+.exp-item__role {
+  font-size: 0.85rem;
+  font-weight: var(--fw-reg);
+}
+
+.exp-item__company {
+  font-size: 0.8rem;
+  font-weight: var(--fw-light);
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.exp-item__dates {
+  font-size: 0.65rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Contact */
+.contact__links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.contact__link {
+  font-size: 0.8rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.contact__link:hover { color: var(--fg); }
