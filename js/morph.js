@@ -1,10 +1,15 @@
 (function () {
   var SENTENCE = 'Software is ideas.\nIdeas should be free,\nfor the good of the world.';
   var CHARS = 'abcdefghijklmnopqrstuvwxyz.,!?;:';
-  var FREEZE_RADIUS = 60;
-  var FLICKER_RATE = 80;
 
-  // 5-wide x 7-tall pixel font (each char is array of 7 rows, each row is 5 bits as number)
+  var CELL = 7;       // px per sub-char — small enough that 2+ fit inside each letter pixel
+  var SUBCELLS = 2;   // sub-chars per letter pixel axis (letter pixel = SUBCELLS x SUBCELLS cells)
+  var GAP = 4;        // px between letters
+  var LINE_GAP = 4;   // px between lines
+  var FREEZE_RADIUS = 90; // px
+  var FLICKER_RATE = 160; // ms — slower
+
+  // 5-wide x 7-tall pixel font
   var FONT = {
     'A': [0b01110,0b10001,0b10001,0b11111,0b10001,0b10001,0b10001],
     'B': [0b11110,0b10001,0b10001,0b11110,0b10001,0b10001,0b11110],
@@ -65,9 +70,8 @@
     ' ': [0b00000,0b00000,0b00000,0b00000,0b00000,0b00000,0b00000]
   };
 
-  var CELL = 9;   // px per sub-character cell
-  var GAP = 2;    // px gap between letters
-  var LINE_GAP = 6; // extra px between lines
+  var LETTER_W = 5 * SUBCELLS * CELL;
+  var LETTER_H = 7 * SUBCELLS * CELL;
 
   var container = document.querySelector('.hero__text');
   if (!container) return;
@@ -77,39 +81,33 @@
 
   var canvas = document.createElement('canvas');
   canvas.style.display = 'block';
-  canvas.style.cursor = 'crosshair';
+  canvas.style.cursor = 'default';
   container.appendChild(canvas);
   var ctx = canvas.getContext('2d');
 
   var mouseX = -9999, mouseY = -9999;
-
-  // Build cell list: {x, y, char, frozen}
   var cells = [];
 
   function randChar() {
     return CHARS[Math.floor(Math.random() * CHARS.length)];
   }
 
-  function getFont(ch) {
-    return FONT[ch] || FONT[' '];
+  function isDark() {
+    var theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'dark') return true;
+    if (theme === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
 
   function buildCells() {
     cells = [];
     var lines = SENTENCE.split('\n');
-    var totalWidth = 0;
 
-    // Compute line widths
-    var lineWidths = lines.map(function(line) {
-      var w = 0;
-      for (var i = 0; i < line.length; i++) {
-        w += 5 * CELL + GAP;
-      }
-      return w - GAP;
+    var lineWidths = lines.map(function (line) {
+      return line.length * (LETTER_W + GAP) - GAP;
     });
-
-    totalWidth = Math.max.apply(null, lineWidths);
-    var totalHeight = lines.length * (7 * CELL + LINE_GAP) - LINE_GAP;
+    var totalWidth = Math.max.apply(null, lineWidths);
+    var totalHeight = lines.length * (LETTER_H + LINE_GAP) - LINE_GAP;
 
     canvas.width = totalWidth;
     canvas.height = totalHeight;
@@ -117,43 +115,83 @@
     canvas.style.height = totalHeight + 'px';
 
     var lineY = 0;
-    lines.forEach(function(line) {
+    lines.forEach(function (line) {
       var lineX = 0;
       for (var ci = 0; ci < line.length; ci++) {
         var ch = line[ci];
-        var bitmap = getFont(ch);
+        var bitmap = FONT[ch] || FONT[' '];
         for (var row = 0; row < 7; row++) {
           var bits = bitmap[row];
           for (var col = 0; col < 5; col++) {
             var bit = (bits >> (4 - col)) & 1;
             if (bit) {
-              cells.push({
-                x: lineX + col * CELL,
-                y: lineY + row * CELL,
-                current: randChar(),
-                frozen: false
-              });
+              // Each bitmap pixel → SUBCELLS×SUBCELLS sub-cells
+              for (var sr = 0; sr < SUBCELLS; sr++) {
+                for (var sc = 0; sc < SUBCELLS; sc++) {
+                  cells.push({
+                    x: lineX + (col * SUBCELLS + sc) * CELL,
+                    y: lineY + (row * SUBCELLS + sr) * CELL,
+                    current: randChar(),
+                    alpha: 1
+                  });
+                }
+              }
             }
           }
         }
-        lineX += 5 * CELL + GAP;
+        lineX += LETTER_W + GAP;
       }
-      lineY += 7 * CELL + LINE_GAP;
+      lineY += LETTER_H + LINE_GAP;
     });
   }
 
-  function getThemeColor() {
+  function getFgColor() {
     return getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#181818';
+  }
+
+  function updateAlphas() {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var mx = (mouseX - rect.left) * scaleX;
+    var my = (mouseY - rect.top) * scaleX;
+    var r = FREEZE_RADIUS * scaleX;
+    var dark = isDark();
+    // outside: dim in light (low alpha), dim in dark (low alpha but bg is dark)
+    var dimAlpha = 0.25;
+    var brightAlpha = 1.0;
+    var hasHover = mouseX !== -9999;
+
+    for (var i = 0; i < cells.length; i++) {
+      if (!hasHover) {
+        cells[i].alpha = 0.7;
+        cells[i].frozen = false;
+      } else {
+        var cx = cells[i].x + CELL / 2;
+        var cy = cells[i].y + CELL / 2;
+        var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
+        if (dist < r) {
+          cells[i].alpha = brightAlpha;
+          cells[i].frozen = true;
+        } else {
+          cells[i].alpha = dimAlpha;
+          cells[i].frozen = false;
+        }
+      }
+    }
   }
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = (CELL - 1) + 'px monospace';
     ctx.textBaseline = 'top';
-    ctx.fillStyle = getThemeColor();
+    var fg = getFgColor();
+
     for (var i = 0; i < cells.length; i++) {
+      ctx.globalAlpha = cells[i].alpha;
+      ctx.fillStyle = fg;
       ctx.fillText(cells[i].current, cells[i].x, cells[i].y);
     }
+    ctx.globalAlpha = 1;
   }
 
   function flicker() {
@@ -165,38 +203,23 @@
     draw();
   }
 
-  function updateFrozen() {
-    var rect = canvas.getBoundingClientRect();
-    var scaleX = canvas.width / rect.width;
-    var scaleY = canvas.height / rect.height;
-    var mx = (mouseX - rect.left) * scaleX;
-    var my = (mouseY - rect.top) * scaleY;
-    var r = FREEZE_RADIUS * scaleX;
-    for (var i = 0; i < cells.length; i++) {
-      var cx = cells[i].x + CELL / 2;
-      var cy = cells[i].y + CELL / 2;
-      var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
-      cells[i].frozen = dist < r;
-    }
-  }
-
-  window.addEventListener('mousemove', function(e) {
+  window.addEventListener('mousemove', function (e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    updateFrozen();
+    updateAlphas();
   });
 
-  window.addEventListener('mouseleave', function() {
+  window.addEventListener('mouseleave', function () {
     mouseX = -9999;
     mouseY = -9999;
-    for (var i = 0; i < cells.length; i++) cells[i].frozen = false;
+    updateAlphas();
   });
 
-  // Observe theme changes and redraw
-  var observer = new MutationObserver(draw);
+  var observer = new MutationObserver(function () { updateAlphas(); draw(); });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   buildCells();
+  updateAlphas();
   draw();
   setInterval(flicker, FLICKER_RATE);
 })();

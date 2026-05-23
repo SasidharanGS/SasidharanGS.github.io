@@ -16,7 +16,10 @@
   line-height: 1;
 }
 
-.hero__meta {
+.hero__text canvas {
+  max-width: 100%;
+  height: auto;
+}
   margin-top: var(--space-lg);
 }
 
