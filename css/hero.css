@@ -7,18 +7,13 @@
 }
 
 .hero__statement {
-  max-width: 640px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .hero__text {
-  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
-  font-weight: var(--fw-light);
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: var(--fg);
   display: block;
-  white-space: pre-wrap;
-  min-height: 4em;
+  line-height: 1;
 }
 
 .hero__meta {
