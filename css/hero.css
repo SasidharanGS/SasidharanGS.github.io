@@ -1,9 +1,8 @@
 #hero {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: var(--space-xl) 0;
+  justify-content: flex-start;
+  padding: var(--space-xl) 0 var(--space-xl);
 }
 
 .hero__statement {
