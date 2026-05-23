@@ -24,3 +24,27 @@
 .sidebar nav a.active {
   color: var(--fg);
 }
+
+.theme-toggle {
+  display: flex;
+  gap: 0.6em;
+  margin-top: auto;
+}
+
+.theme-toggle button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.theme-toggle button:hover,
+.theme-toggle button.active {
+  color: var(--fg);
+}
