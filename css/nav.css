@@ -27,8 +27,10 @@
 
 .theme-toggle {
   display: flex;
-  gap: 0.6em;
-  margin-top: auto;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--rule);
 }
 
 .theme-toggle button {
@@ -37,11 +39,12 @@
   padding: 0;
   cursor: pointer;
   font-family: var(--font-sans);
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: var(--fw-light);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   color: var(--muted);
   transition: color 0.2s ease;
+  text-align: left;
 }
 
 .theme-toggle button:hover,
