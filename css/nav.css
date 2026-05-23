@@ -25,12 +25,19 @@
   color: var(--fg);
 }
 
+.sidebar nav .nav-sep {
+  height: 1px;
+  background: var(--rule);
+  margin: calc(var(--space-sm) / 2) 0;
+}
+
 .theme-toggle {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
   display: flex;
-  flex-direction: column;
   gap: var(--space-sm);
-  padding-top: var(--space-lg);
-  border-top: 1px solid var(--rule);
+  z-index: 200;
 }
 
 .theme-toggle button {
@@ -44,7 +51,6 @@
   letter-spacing: 0.2em;
   color: var(--muted);
   transition: color 0.2s ease;
-  text-align: left;
 }
 
 .theme-toggle button:hover,
