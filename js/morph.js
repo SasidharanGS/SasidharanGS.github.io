@@ -1,15 +1,18 @@
 (function () {
-  var SENTENCE = 'Software is ideas.\nIdeas should be free,\nfor the good of the world.';
+  var SENTENCE = 'software is IDEAS.\nideas should be FREE,\nfor a BETTER world.';
   var CHARS = 'abcdefghijklmnopqrstuvwxyz.,!?;:';
+  var ACCENT_WORDS = ['IDEAS', 'FREE', 'BETTER'];
 
-  var CELL = 7;       // px per sub-char — small enough that 2+ fit inside each letter pixel
-  var SUBCELLS = 2;   // sub-chars per letter pixel axis (letter pixel = SUBCELLS x SUBCELLS cells)
-  var GAP = 4;        // px between letters
-  var LINE_GAP = 4;   // px between lines
-  var FREEZE_RADIUS = 90; // px
-  var FLICKER_RATE = 160; // ms — slower
+  var CELL = 7;
+  var SUBCELLS = 2;
+  var GAP = 4;
+  var LINE_GAP = 4;
+  var FREEZE_RADIUS = 90;
+  var FLICKER_RATE = 60;
 
-  // 5-wide x 7-tall pixel font
+  var LETTER_W = 5 * SUBCELLS * CELL;
+  var LETTER_H = 7 * SUBCELLS * CELL;
+
   var FONT = {
     'A': [0b01110,0b10001,0b10001,0b11111,0b10001,0b10001,0b10001],
     'B': [0b11110,0b10001,0b10001,0b11110,0b10001,0b10001,0b11110],
@@ -70,9 +73,6 @@
     ' ': [0b00000,0b00000,0b00000,0b00000,0b00000,0b00000,0b00000]
   };
 
-  var LETTER_W = 5 * SUBCELLS * CELL;
-  var LETTER_H = 7 * SUBCELLS * CELL;
-
   var container = document.querySelector('.hero__text');
   if (!container) return;
   container.innerHTML = '';
@@ -92,11 +92,8 @@
     return CHARS[Math.floor(Math.random() * CHARS.length)];
   }
 
-  function isDark() {
-    var theme = document.documentElement.getAttribute('data-theme');
-    if (theme === 'dark') return true;
-    if (theme === 'light') return false;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  function getFgColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#181818';
   }
 
   function buildCells() {
@@ -116,23 +113,35 @@
 
     var lineY = 0;
     lines.forEach(function (line) {
+      // Mark which character indices belong to accent words
+      var accentIndices = {};
+      ACCENT_WORDS.forEach(function (word) {
+        var idx = line.indexOf(word);
+        while (idx !== -1) {
+          for (var k = 0; k < word.length; k++) accentIndices[idx + k] = true;
+          idx = line.indexOf(word, idx + 1);
+        }
+      });
+
       var lineX = 0;
       for (var ci = 0; ci < line.length; ci++) {
         var ch = line[ci];
         var bitmap = FONT[ch] || FONT[' '];
+        var isAccent = !!accentIndices[ci];
         for (var row = 0; row < 7; row++) {
           var bits = bitmap[row];
           for (var col = 0; col < 5; col++) {
             var bit = (bits >> (4 - col)) & 1;
             if (bit) {
-              // Each bitmap pixel → SUBCELLS×SUBCELLS sub-cells
               for (var sr = 0; sr < SUBCELLS; sr++) {
                 for (var sc = 0; sc < SUBCELLS; sc++) {
                   cells.push({
                     x: lineX + (col * SUBCELLS + sc) * CELL,
                     y: lineY + (row * SUBCELLS + sr) * CELL,
                     current: randChar(),
-                    alpha: 1
+                    alpha: 1,
+                    accent: isAccent,
+                    frozen: false
                   });
                 }
               }
@@ -145,23 +154,20 @@
     });
   }
 
-  function getFgColor() {
-    return getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#181818';
-  }
-
   function updateAlphas() {
     var rect = canvas.getBoundingClientRect();
     var scaleX = canvas.width / rect.width;
     var mx = (mouseX - rect.left) * scaleX;
     var my = (mouseY - rect.top) * scaleX;
     var r = FREEZE_RADIUS * scaleX;
-    var dark = isDark();
-    // outside: dim in light (low alpha), dim in dark (low alpha but bg is dark)
-    var dimAlpha = 0.25;
-    var brightAlpha = 1.0;
     var hasHover = mouseX !== -9999;
 
     for (var i = 0; i < cells.length; i++) {
+      if (cells[i].accent) {
+        cells[i].alpha = 1.0;
+        cells[i].frozen = false;
+        continue;
+      }
       if (!hasHover) {
         cells[i].alpha = 0.7;
         cells[i].frozen = false;
@@ -170,10 +176,10 @@
         var cy = cells[i].y + CELL / 2;
         var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
         if (dist < r) {
-          cells[i].alpha = brightAlpha;
+          cells[i].alpha = 1.0;
           cells[i].frozen = true;
         } else {
-          cells[i].alpha = dimAlpha;
+          cells[i].alpha = 0.25;
           cells[i].frozen = false;
         }
       }
@@ -185,7 +191,6 @@
     ctx.font = (CELL - 1) + 'px monospace';
     ctx.textBaseline = 'top';
     var fg = getFgColor();
-
     for (var i = 0; i < cells.length; i++) {
       ctx.globalAlpha = cells[i].alpha;
       ctx.fillStyle = fg;
@@ -196,7 +201,7 @@
 
   function flicker() {
     for (var i = 0; i < cells.length; i++) {
-      if (!cells[i].frozen) {
+      if (!cells[i].frozen && !cells[i].accent) {
         cells[i].current = randChar();
       }
     }
