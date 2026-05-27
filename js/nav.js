@@ -1,13 +1,17 @@
 (function () {
-  const links = document.querySelectorAll('.sidebar nav a[href^="#"]');
-  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href')));
+  var sidebarLinks = document.querySelectorAll('.sidebar nav a[href^="#"]');
+  var mobileLinks  = document.querySelectorAll('.mobile-nav a[href^="#"]');
+  var allLinks     = Array.from(sidebarLinks).concat(Array.from(mobileLinks));
+  var sections     = allLinks
+    .map(function(l) { return document.querySelector(l.getAttribute('href')); })
+    .filter(Boolean);
 
   function onScroll() {
-    const scrollY = window.scrollY + window.innerHeight * 0.35;
-    let current = sections[0];
-    sections.forEach(s => { if (s && s.offsetTop <= scrollY) current = s; });
-    links.forEach(l => {
-      l.classList.toggle('active', l.getAttribute('href') === '#' + current?.id);
+    var scrollY  = window.scrollY + window.innerHeight * 0.35;
+    var current  = sections[0];
+    sections.forEach(function(s) { if (s.offsetTop <= scrollY) current = s; });
+    allLinks.forEach(function(l) {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + current.id);
     });
   }
 

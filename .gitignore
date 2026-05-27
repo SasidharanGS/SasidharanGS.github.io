@@ -1,3 +1,5 @@
 .playwright-mcp/
 .superpowers/
 AGENTS.md
+*.png
+docs/

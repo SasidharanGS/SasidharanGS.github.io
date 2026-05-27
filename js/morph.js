@@ -1,15 +1,15 @@
 (function () {
-  var SENTENCE = 'software is IDEAS.\nideas should be FREE,\nfor a BETTER world.';
-  var CHARS = 'abcdefghijklmnopqrstuvwxyz.,!?;:';
+  var SENTENCE     = 'software is IDEAS.\nideas should be FREE,\nfor a BETTER world.';
+  var CHARS        = 'abcdefghijklmnopqrstuvwxyz.,!?;:';
   var ACCENT_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var ACCENT_WORDS = ['IDEAS', 'FREE', 'BETTER'];
 
-  var CELL = 11;
-  var SUBCELLS = 2;
-  var GAP = 5;
-  var LINE_GAP = 5;
-  var FREEZE_RADIUS = 90;
-  var FLICKER_RATE = 400;
+  var CELL               = 11;
+  var SUBCELLS           = 2;
+  var GAP                = 5;
+  var LINE_GAP           = 5;
+  var FREEZE_RADIUS      = 90;
+  var FLICKER_RATE       = 400;
   var ACCENT_FLICKER_RATE = 800;
 
   var FONT = {
@@ -75,81 +75,76 @@
   var container = document.querySelector('.hero__text');
   if (!container) return;
   container.innerHTML = '';
-  container.style.minHeight = '';
-  container.style.whiteSpace = 'normal';
 
   var canvas = document.createElement('canvas');
   canvas.style.display = 'block';
-  canvas.style.cursor = 'default';
+  canvas.style.cursor  = 'default';
   container.appendChild(canvas);
   var ctx = canvas.getContext('2d');
 
   var mouseX = -9999, mouseY = -9999;
-  var cells = [];
+  var cells  = [];
+  var cachedRect = null;
+  var cachedFg   = '';
+  var fontStr    = '';
 
-  function randChar() {
-    return CHARS[Math.floor(Math.random() * CHARS.length)];
-  }
+  function randChar()       { return CHARS[Math.floor(Math.random() * CHARS.length)]; }
+  function randAccentChar() { return ACCENT_CHARS[Math.floor(Math.random() * ACCENT_CHARS.length)]; }
 
-  function randAccentChar() {
-    return ACCENT_CHARS[Math.floor(Math.random() * ACCENT_CHARS.length)];
-  }
-
-  function getFgColor() {
-    return getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#181818';
+  function getFg() {
+    if (!cachedFg) cachedFg = getComputedStyle(document.documentElement).getPropertyValue('--fg').trim() || '#181818';
+    return cachedFg;
   }
 
   function buildCells() {
     cells = [];
-    var lines = SENTENCE.split('\n');
+    cachedRect = null;
+    cachedFg   = '';
+
+    var lines       = SENTENCE.split('\n');
     var longestLine = lines.reduce(function(a, b) { return a.length > b.length ? a : b; });
-    var charCount = longestLine.length;
+    var charCount   = longestLine.length;
     var containerWidth = container.getBoundingClientRect().width || 600;
 
-    // Find the best (sc, cell) that fits containerWidth — try SUBCELLS down to 1
     var cell = CELL, sc = SUBCELLS;
     outer: for (sc = SUBCELLS; sc >= 1; sc--) {
       for (cell = CELL; cell >= 2; cell--) {
         var g = Math.max(1, Math.round(GAP * cell / CELL));
-        var w = charCount * (5 * sc * cell + g) - g;
-        if (w <= containerWidth) break outer;
+        if (charCount * (5 * sc * cell + g) - g <= containerWidth) break outer;
       }
     }
     cell = Math.max(2, cell);
 
-    var gap     = Math.max(1, Math.round(GAP * cell / CELL));
+    var gap     = Math.max(1, Math.round(GAP      * cell / CELL));
     var lineGap = Math.max(1, Math.round(LINE_GAP * cell / CELL));
     var letterW = 5 * sc * cell;
     var letterH = 7 * sc * cell;
 
-    var totalWidth = Math.max.apply(null, lines.map(function(l) {
-      return l.length * (letterW + gap) - gap;
-    }));
-    var totalHeight = lines.length * (letterH + lineGap) - lineGap;
+    var totalW = Math.max.apply(null, lines.map(function(l) { return l.length * (letterW + gap) - gap; }));
+    var totalH = lines.length * (letterH + lineGap) - lineGap;
 
-    canvas.width  = totalWidth;
-    canvas.height = totalHeight;
-    canvas.style.width  = totalWidth + 'px';
-    canvas.style.height = totalHeight + 'px';
-    canvas._cellSize     = cell;
-    canvas._freezeRadius = FREEZE_RADIUS * (cell / CELL);
+    canvas.width  = totalW;
+    canvas.height = totalH;
+    canvas.style.width  = totalW + 'px';
+    canvas.style.height = totalH + 'px';
+
+    canvas._cell   = cell;
+    canvas._freeze = FREEZE_RADIUS * (cell / CELL);
+
+    fontStr = cell + 'px monospace';
 
     var lineY = 0;
     lines.forEach(function(line) {
-      var accentIndices = {};
-      ACCENT_WORDS.forEach(function(word) {
-        var idx = line.indexOf(word);
-        while (idx !== -1) {
-          for (var k = 0; k < word.length; k++) accentIndices[idx + k] = true;
-          idx = line.indexOf(word, idx + 1);
-        }
+      var accent = {};
+      ACCENT_WORDS.forEach(function(w) {
+        var i = line.indexOf(w);
+        while (i !== -1) { for (var k = 0; k < w.length; k++) accent[i + k] = true; i = line.indexOf(w, i + 1); }
       });
 
       var lineX = 0;
       for (var ci = 0; ci < line.length; ci++) {
-        var ch = line[ci];
-        var bitmap = FONT[ch] || FONT[' '];
-        var isAccent = !!accentIndices[ci];
+        var bitmap   = FONT[line[ci]] || FONT[' '];
+        var isAccent = !!accent[ci];
         for (var row = 0; row < 7; row++) {
           var bits = bitmap[row];
           for (var col = 0; col < 5; col++) {
@@ -172,30 +167,34 @@
       }
       lineY += letterH + lineGap;
     });
+
+    for (var i = 0; i < cells.length; i++) scheduleCell(cells[i]);
   }
 
   function computeAlpha(cell, mx, my, r) {
     if (cell.accent) return 1.0;
     if (mouseX === -9999) return 0.7;
-    var half = canvas._cellSize / 2;
-    var cx = cell.x + half;
-    var cy = cell.y + half;
-    var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
-    return dist < r ? 1.0 : 0.25;
+    var half = canvas._cell / 2;
+    var dx = cell.x + half - mx;
+    var dy = cell.y + half - my;
+    return (dx * dx + dy * dy) < r * r ? 1.0 : 0.25;
   }
 
   function draw() {
+    if (!cachedRect) cachedRect = canvas.getBoundingClientRect();
+    var mx = mouseX - cachedRect.left;
+    var my = mouseY - cachedRect.top;
+    var r  = canvas._freeze;
+    var fg = getFg();
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.font = canvas._cellSize + 'px monospace';
+    ctx.font         = fontStr;
     ctx.textBaseline = 'top';
-    var fg = getFgColor();
-    var rect = canvas.getBoundingClientRect();
-    var mx = mouseX - rect.left;
-    var my = mouseY - rect.top;
-    var r  = canvas._freezeRadius;
+    ctx.fillStyle    = fg;
+
     for (var i = 0; i < cells.length; i++) {
-      ctx.globalAlpha = computeAlpha(cells[i], mx, my, r);
-      ctx.fillStyle = fg;
+      var a = computeAlpha(cells[i], mx, my, r);
+      if (ctx.globalAlpha !== a) ctx.globalAlpha = a;
       ctx.fillText(cells[i].current, cells[i].x, cells[i].y);
     }
     ctx.globalAlpha = 1;
@@ -203,31 +202,38 @@
   }
 
   function updateFrozen() {
-    var rect = canvas.getBoundingClientRect();
-    var mx   = mouseX - rect.left;
-    var my   = mouseY - rect.top;
-    var r    = canvas._freezeRadius;
-    var half = canvas._cellSize / 2;
+    if (!cachedRect) return;
+    var mx   = mouseX - cachedRect.left;
+    var my   = mouseY - cachedRect.top;
+    var r    = canvas._freeze;
+    var half = canvas._cell / 2;
     for (var i = 0; i < cells.length; i++) {
       if (cells[i].accent || mouseX === -9999) { cells[i].frozen = false; continue; }
-      var cx = cells[i].x + half;
-      var cy = cells[i].y + half;
-      cells[i].frozen = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my)) < r;
+      var dx = cells[i].x + half - mx;
+      var dy = cells[i].y + half - my;
+      cells[i].frozen = (dx * dx + dy * dy) < r * r;
     }
   }
 
   function scheduleCell(cell) {
-    var rate = (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE;
     setTimeout(function tick() {
       cell.current = cell.accent ? randAccentChar() : randChar();
-      var nextRate = (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE;
-      setTimeout(tick, nextRate);
-    }, Math.random() * rate);
+      setTimeout(tick, (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE);
+    }, Math.random() * FLICKER_RATE);
+  }
+
+  var resizeTimer;
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      cachedRect = null;
+      cachedFg   = '';
+      buildCells();
+    }, 150);
   }
 
   buildCells();
   draw();
-  for (var i = 0; i < cells.length; i++) scheduleCell(cells[i]);
 
   window.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
@@ -241,7 +247,9 @@
     updateFrozen();
   });
 
-  window.addEventListener('resize', function() {
-    buildCells();
+  window.addEventListener('resize', onResize);
+
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) cachedFg = '';
   });
 })();

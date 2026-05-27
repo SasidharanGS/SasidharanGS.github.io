@@ -2,12 +2,11 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: var(--space-xl) 0 var(--space-xl);
+  padding: var(--space-xl) 0;
 }
 
 .hero__statement {
   max-width: 100%;
-  overflow-x: auto;
 }
 
 .hero__text {
@@ -18,11 +17,10 @@
 .hero__text canvas {
   display: block;
   max-width: 100%;
-  height: auto;
 }
 
 @media (max-width: 768px) {
   #hero {
-    padding: var(--space-lg) 0 var(--space-lg);
+    padding: var(--space-lg) 0;
   }
 }
