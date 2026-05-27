@@ -1,8 +1,5 @@
 .sidebar__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
+  display: block;
 }
 
 .sidebar__identity {
@@ -55,12 +52,10 @@
 }
 
 .theme-toggle {
-  position: fixed;
-  top: var(--space-md);
-  right: var(--space-md);
   display: flex;
-  gap: var(--space-sm);
-  z-index: 200;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
 }
 
 .theme-toggle button {
@@ -74,6 +69,7 @@
   letter-spacing: 0.2em;
   color: var(--muted);
   transition: color 0.2s ease;
+  text-align: left;
 }
 
 .theme-toggle button:hover,
