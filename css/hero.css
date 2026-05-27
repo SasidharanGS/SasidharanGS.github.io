@@ -1,27 +1,13 @@
 #hero {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   padding: var(--space-xl) 0;
-  border-top: none;
-}
-
-.hero__statement {
-  max-width: 100%;
 }
 
 .hero__text {
   display: block;
   line-height: 1;
-}
-
-.hero__text canvas {
-  display: block;
-  max-width: 100%;
+  font-weight: inherit;
 }
 
 @media (max-width: 768px) {
-  #hero {
-    padding: var(--space-lg) 0;
-  }
+  #hero { padding: var(--space-lg) 0; }
 }

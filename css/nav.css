@@ -1,7 +1,4 @@
-.sidebar__header {
-  display: block;
-}
-
+/* ── Sidebar (desktop) ──────────────────────────────────── */
 .sidebar__identity {
   display: flex;
   flex-direction: column;
@@ -11,7 +8,6 @@
 .sidebar__name {
   font-size: 1.4rem;
   font-weight: var(--fw-light);
-  font-family: var(--font-sans);
   letter-spacing: 0.02em;
   color: var(--fg);
   line-height: 1.2;
@@ -20,7 +16,6 @@
 .sidebar__role {
   font-size: 0.75rem;
   font-weight: var(--fw-light);
-  font-family: var(--font-sans);
   letter-spacing: 0.15em;
   color: var(--muted);
   line-height: 1.4;
@@ -63,7 +58,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
-  font-family: var(--font-sans);
+  font: inherit;
   font-size: 0.7rem;
   font-weight: var(--fw-light);
   letter-spacing: 0.2em;
@@ -77,10 +72,8 @@
   color: var(--fg);
 }
 
-/* ── Mobile nav bar ─────────────────────────────────────── */
-.mobile-nav {
-  display: none;
-}
+/* ── Mobile nav (top bar) ───────────────────────────────── */
+.mobile-nav { display: none; }
 
 @media (max-width: 768px) {
   .mobile-nav {
@@ -96,51 +89,42 @@
   }
 
   .mobile-nav__name {
-    flex: 0 0 auto;
+    font-size: 0.88rem;
+    font-weight: var(--fw-light);
+    letter-spacing: 0.04em;
+    color: var(--fg);
+    white-space: nowrap;
   }
 
   .mobile-nav__group {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 0 0 auto;
   }
 
   .mobile-nav__blog-link {
-    flex: 0 0 auto;
-  }
-
-  .mobile-nav__name {
-    font-size: 0.88rem;
+    font-size: 0.65rem;
     font-weight: var(--fw-light);
-    font-family: var(--font-sans);
-    letter-spacing: 0.04em;
-    color: var(--fg);
+    letter-spacing: 0.18em;
     white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .mobile-nav__sep {
-    width: 1px;
-    height: 12px;
-    background: var(--rule);
-    flex-shrink: 0;
+    color: var(--muted);
+    transition: color 0.2s ease;
   }
 
   .mobile-nav a,
   .mobile-nav button {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
     color: var(--muted);
-    transition: color 0.2s;
+    transition: color 0.2s ease;
   }
 
   .mobile-nav a:hover,
+  .mobile-nav a.active,
   .mobile-nav button:hover,
   .mobile-nav button.active {
     color: var(--fg);
@@ -155,17 +139,4 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-
-  .mobile-nav__blog-link {
-    font-size: 0.65rem;
-    font-family: var(--font-sans);
-    font-weight: var(--fw-light);
-    letter-spacing: 0.18em;
-    white-space: nowrap;
-    color: var(--muted);
-    transition: color 0.2s;
-  }
-
-  .mobile-nav__blog-link:hover { color: var(--fg); }
 }
-

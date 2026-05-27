@@ -78,7 +78,6 @@
 
   var canvas = document.createElement('canvas');
   canvas.style.display = 'block';
-  canvas.style.cursor  = 'default';
   container.appendChild(canvas);
   var ctx = canvas.getContext('2d');
 
@@ -113,7 +112,6 @@
         if (charCount * (5 * sc * cell + g) - g <= containerWidth) break outer;
       }
     }
-    cell = Math.max(2, cell);
 
     var gap     = Math.max(1, Math.round(GAP      * cell / CELL));
     var lineGap = Math.max(1, Math.round(LINE_GAP * cell / CELL));
@@ -241,7 +239,7 @@
     updateFrozen();
   });
 
-  window.addEventListener('mouseleave', function() {
+  document.addEventListener('mouseleave', function() {
     mouseX = -9999;
     mouseY = -9999;
     updateFrozen();
@@ -249,7 +247,9 @@
 
   window.addEventListener('resize', onResize);
 
-  document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) cachedFg = '';
-  });
+  new MutationObserver(function() { cachedFg = ''; })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', function() { cachedFg = ''; });
 })();
