@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: var(--space-xl) 0;
+  border-top: none;
 }
 
 .hero__statement {
