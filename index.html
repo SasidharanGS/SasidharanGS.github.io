@@ -41,31 +41,32 @@
 
   <nav class="mobile-nav" aria-label="mobile navigation">
     <span class="mobile-nav__name">sasidharan gs</span>
-    <div class="mobile-nav__sep"></div>
-    <a href="#about" aria-label="about">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    </a>
-    <a href="#projects" aria-label="projects">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    </a>
-    <a href="#experience" aria-label="experience">
-      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-    </a>
-    <a href="#contact" aria-label="contact">
-      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
-    </a>
-    <div class="mobile-nav__sep"></div>
-    <a href="blog/index.html" class="mobile-nav__blog-link">blog</a>
-    <div class="mobile-nav__sep"></div>
-    <button data-theme="light" aria-label="light mode">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-    </button>
-    <button data-theme="dark" aria-label="dark mode">
-      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
-    </button>
-    <button data-theme="system" aria-label="system mode">
-      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-    </button>
+    <div class="mobile-nav__right">
+      <div class="mobile-nav__icons">
+        <a href="#about" aria-label="about">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </a>
+        <a href="#projects" aria-label="projects">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </a>
+        <a href="#experience" aria-label="experience">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </a>
+        <a href="#contact" aria-label="contact">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+        </a>
+      </div>
+      <div class="mobile-nav__sep"></div>
+      <a href="blog/index.html" aria-label="blog" class="mobile-nav__blog">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      </a>
+      <div class="mobile-nav__sep"></div>
+      <div class="theme-toggle theme-toggle--mobile">
+        <button data-theme="light">light</button>
+        <button data-theme="dark">dark</button>
+        <button data-theme="system">system</button>
+      </div>
+    </div>
   </nav>
 
   <main class="main">

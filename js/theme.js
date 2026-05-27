@@ -30,7 +30,7 @@
 
   function updateButtons() {
     var mode = currentMode();
-    document.querySelectorAll('.theme-toggle button, .mobile-nav button[data-theme]').forEach(function (btn) {
+    document.querySelectorAll('.theme-toggle button').forEach(function (btn) {
       btn.classList.toggle('active', btn.dataset.theme === mode);
     });
   }
@@ -38,7 +38,7 @@
   apply(currentMode());
 
   document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.theme-toggle button, .mobile-nav button[data-theme]').forEach(function (btn) {
+    document.querySelectorAll('.theme-toggle button').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var mode = btn.dataset.theme;
         save(mode);
