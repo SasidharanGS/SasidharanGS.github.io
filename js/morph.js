@@ -12,9 +12,6 @@
   var FLICKER_RATE = 400;
   var ACCENT_FLICKER_RATE = 800;
 
-  var LETTER_W = 5 * SUBCELLS * CELL;
-  var LETTER_H = 7 * SUBCELLS * CELL;
-
   var FONT = {
     'A': [0b01110,0b10001,0b10001,0b11111,0b10001,0b10001,0b10001],
     'B': [0b11110,0b10001,0b10001,0b11110,0b10001,0b10001,0b11110],
@@ -105,29 +102,42 @@
   function buildCells() {
     cells = [];
     var lines = SENTENCE.split('\n');
+    var longestLine = lines.reduce(function(a, b) { return a.length > b.length ? a : b; });
+    var charCount = longestLine.length;
+    var containerWidth = container.getBoundingClientRect().width || 600;
 
-    var lineWidths = lines.map(function (line) {
-      return line.length * (LETTER_W + GAP) - GAP;
-    });
-    var totalWidth = Math.max.apply(null, lineWidths);
-    var totalHeight = lines.length * (LETTER_H + LINE_GAP) - LINE_GAP;
+    // Find the best (sc, cell) that fits containerWidth — try SUBCELLS down to 1
+    var cell = CELL, sc = SUBCELLS;
+    outer: for (sc = SUBCELLS; sc >= 1; sc--) {
+      for (cell = CELL; cell >= 2; cell--) {
+        var g = Math.max(1, Math.round(GAP * cell / CELL));
+        var w = charCount * (5 * sc * cell + g) - g;
+        if (w <= containerWidth) break outer;
+      }
+    }
+    cell = Math.max(2, cell);
 
-    // Scale canvas to fit container — never wider than container
-    var containerWidth = container.getBoundingClientRect().width || totalWidth;
-    var scale = Math.min(1, containerWidth / totalWidth);
-    var displayW = Math.round(totalWidth * scale);
-    var displayH = Math.round(totalHeight * scale);
+    var gap     = Math.max(1, Math.round(GAP * cell / CELL));
+    var lineGap = Math.max(1, Math.round(LINE_GAP * cell / CELL));
+    var letterW = 5 * sc * cell;
+    var letterH = 7 * sc * cell;
 
-    // Internal resolution = display size (1:1 pixel ratio, no CSS scaling)
-    canvas.width = displayW;
-    canvas.height = displayH;
-    canvas.style.width = displayW + 'px';
-    canvas.style.height = displayH + 'px';
+    var totalWidth = Math.max.apply(null, lines.map(function(l) {
+      return l.length * (letterW + gap) - gap;
+    }));
+    var totalHeight = lines.length * (letterH + lineGap) - lineGap;
+
+    canvas.width  = totalWidth;
+    canvas.height = totalHeight;
+    canvas.style.width  = totalWidth + 'px';
+    canvas.style.height = totalHeight + 'px';
+    canvas._cellSize     = cell;
+    canvas._freezeRadius = FREEZE_RADIUS * (cell / CELL);
 
     var lineY = 0;
-    lines.forEach(function (line) {
+    lines.forEach(function(line) {
       var accentIndices = {};
-      ACCENT_WORDS.forEach(function (word) {
+      ACCENT_WORDS.forEach(function(word) {
         var idx = line.indexOf(word);
         while (idx !== -1) {
           for (var k = 0; k < word.length; k++) accentIndices[idx + k] = true;
@@ -143,15 +153,13 @@
         for (var row = 0; row < 7; row++) {
           var bits = bitmap[row];
           for (var col = 0; col < 5; col++) {
-            var bit = (bits >> (4 - col)) & 1;
-            if (bit) {
-              for (var sr = 0; sr < SUBCELLS; sr++) {
-                for (var sc2 = 0; sc2 < SUBCELLS; sc2++) {
+            if ((bits >> (4 - col)) & 1) {
+              for (var sr = 0; sr < sc; sr++) {
+                for (var sc2 = 0; sc2 < sc; sc2++) {
                   cells.push({
-                    x: Math.round((lineX + (col * SUBCELLS + sc2) * CELL) * scale),
-                    y: Math.round((lineY + (row * SUBCELLS + sr) * CELL) * scale),
+                    x: lineX + (col * sc + sc2) * cell,
+                    y: lineY + (row * sc + sr)  * cell,
                     current: isAccent ? randAccentChar() : randChar(),
-                    alpha: 1,
                     accent: isAccent,
                     frozen: false
                   });
@@ -160,36 +168,31 @@
             }
           }
         }
-        lineX += LETTER_W + GAP;
+        lineX += letterW + gap;
       }
-      lineY += LETTER_H + LINE_GAP;
+      lineY += letterH + lineGap;
     });
-
-    // Store scaled cell size for font rendering
-    canvas._cellSize = Math.max(1, Math.round((CELL - 1) * scale));
   }
 
   function computeAlpha(cell, mx, my, r) {
     if (cell.accent) return 1.0;
     if (mouseX === -9999) return 0.7;
-    var cx = cell.x + (canvas._cellSize / 2);
-    var cy = cell.y + (canvas._cellSize / 2);
+    var half = canvas._cellSize / 2;
+    var cx = cell.x + half;
+    var cy = cell.y + half;
     var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
     return dist < r ? 1.0 : 0.25;
   }
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var cellSize = canvas._cellSize || (CELL - 1);
-    ctx.font = cellSize + 'px monospace';
+    ctx.font = canvas._cellSize + 'px monospace';
     ctx.textBaseline = 'top';
     var fg = getFgColor();
-
-    // Mouse coords are already in canvas/display pixels (1:1)
-    var mx = mouseX - canvas.getBoundingClientRect().left;
-    var my = mouseY - canvas.getBoundingClientRect().top;
-    var r = FREEZE_RADIUS;
-
+    var rect = canvas.getBoundingClientRect();
+    var mx = mouseX - rect.left;
+    var my = mouseY - rect.top;
+    var r  = canvas._freezeRadius;
     for (var i = 0; i < cells.length; i++) {
       ctx.globalAlpha = computeAlpha(cells[i], mx, my, r);
       ctx.fillStyle = fg;
@@ -201,27 +204,22 @@
 
   function updateFrozen() {
     var rect = canvas.getBoundingClientRect();
-    var mx = mouseX - rect.left;
-    var my = mouseY - rect.top;
-    var r = FREEZE_RADIUS;
+    var mx   = mouseX - rect.left;
+    var my   = mouseY - rect.top;
+    var r    = canvas._freezeRadius;
+    var half = canvas._cellSize / 2;
     for (var i = 0; i < cells.length; i++) {
-      if (cells[i].accent) { cells[i].frozen = false; continue; }
-      if (mouseX === -9999) { cells[i].frozen = false; continue; }
-      var cx = cells[i].x + (canvas._cellSize / 2 || CELL / 2);
-      var cy = cells[i].y + (canvas._cellSize / 2 || CELL / 2);
-      var dist = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my));
-      cells[i].frozen = dist < r;
+      if (cells[i].accent || mouseX === -9999) { cells[i].frozen = false; continue; }
+      var cx = cells[i].x + half;
+      var cy = cells[i].y + half;
+      cells[i].frozen = Math.sqrt((cx - mx) * (cx - mx) + (cy - my) * (cy - my)) < r;
     }
   }
 
   function scheduleCell(cell) {
     var rate = (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE;
     setTimeout(function tick() {
-      if (cell.accent) {
-        cell.current = randAccentChar();
-      } else {
-        cell.current = randChar();
-      }
+      cell.current = cell.accent ? randAccentChar() : randChar();
       var nextRate = (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE;
       setTimeout(tick, nextRate);
     }, Math.random() * rate);
@@ -231,19 +229,19 @@
   draw();
   for (var i = 0; i < cells.length; i++) scheduleCell(cells[i]);
 
-  window.addEventListener('mousemove', function (e) {
+  window.addEventListener('mousemove', function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
     updateFrozen();
   });
 
-  window.addEventListener('mouseleave', function () {
+  window.addEventListener('mouseleave', function() {
     mouseX = -9999;
     mouseY = -9999;
     updateFrozen();
   });
 
-  window.addEventListener('resize', function () {
+  window.addEventListener('resize', function() {
     buildCells();
   });
 })();

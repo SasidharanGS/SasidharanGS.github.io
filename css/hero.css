@@ -16,16 +16,13 @@
 }
 
 .hero__text canvas {
+  display: block;
   max-width: 100%;
   height: auto;
 }
-  margin-top: var(--space-lg);
-}
 
-.hero__role {
-  font-size: 0.7rem;
-  font-weight: var(--fw-light);
-  letter-spacing: 0.25em;
-  color: var(--muted);
-  text-transform: lowercase;
+@media (max-width: 768px) {
+  #hero {
+    padding: var(--space-lg) 0 var(--space-lg);
+  }
 }
