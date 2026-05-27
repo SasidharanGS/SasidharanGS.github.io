@@ -90,19 +90,29 @@
   .mobile-nav {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     padding: 10px 14px;
     border-bottom: 1px solid var(--rule);
     background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 200;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
   }
 
-  .mobile-nav::-webkit-scrollbar { display: none; }
+  .mobile-nav__name {
+    flex: 0 0 auto;
+  }
+
+  .mobile-nav__group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+
+  .mobile-nav__blog-link {
+    flex: 0 0 auto;
+  }
 
   .mobile-nav__name {
     font-size: 0.88rem;
