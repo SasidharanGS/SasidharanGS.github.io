@@ -171,7 +171,6 @@
 
   function computeAlpha(cell, mx, my, r) {
     if (cell.accent) return 1.0;
-    if (mouseX === -9999) return 0.7;
     var half = canvas._cell / 2;
     var dx = cell.x + half - mx;
     var dy = cell.y + half - my;
@@ -206,7 +205,7 @@
     var r    = canvas._freeze;
     var half = canvas._cell / 2;
     for (var i = 0; i < cells.length; i++) {
-      if (cells[i].accent || mouseX === -9999) { cells[i].frozen = false; continue; }
+      if (cells[i].accent) { cells[i].frozen = false; continue; }
       var dx = cells[i].x + half - mx;
       var dy = cells[i].y + half - my;
       cells[i].frozen = (dx * dx + dy * dy) < r * r;
