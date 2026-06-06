@@ -61,6 +61,23 @@ section + section {
 
 .project-card__links a:hover { color: var(--fg); }
 
+.project-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: var(--space-sm);
+}
+
+.project-card__tag {
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  background: var(--bg-secondary, var(--rule));
+  border-radius: 3px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
 /* Experience */
 .experience__list {
   display: flex;
