@@ -131,3 +131,18 @@ section + section {
 }
 
 .contact__link:hover { color: var(--fg); }
+
+.exp-item__highlights {
+  margin-top: var(--space-sm);
+  padding-left: 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exp-item__highlights li {
+  font-size: 0.75rem;
+  font-weight: var(--fw-light);
+  color: var(--muted);
+  line-height: 1.5;
+}
