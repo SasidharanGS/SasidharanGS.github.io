@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1 june 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">1 june 2026</h1>
+        <span class="post__date">monday</span>
+      </header>
+      <div class="post__body">
+<p>Spent today untangling an audio pipeline refactor in my evaluation backend, then chased the fallout through an end-to-end run. The theme was “remove unnecessary decoding, remove heavyweight deps,” and then fix the sharp edges that appear when you delete a code path that other parts of the system still assume exists.</p>
+<h2>What I learned</h2>
+<ul>
+<li>Hugging Face audio dataset decoding can quietly pull in heavyweight dependencies (e.g., PyTorch/torchcodec). If all I need is to forward audio to an external STT service, it’s often better to treat audio as bytes and avoid decoding entirely.</li>
+<li>Using <code>decode=False</code> (and passing through the original WAV bytes) is a clean way to keep the pipeline lightweight and deterministic—no hidden resampling/re-encoding steps, and fewer transitive deps.</li>
+<li>Refactors that remove fields/variables (like <code>audio_bytes</code>) tend to fail at runtime in background tasks first. My FastAPI app surfaced this as a <code>NameError</code> inside an async evaluation runner.</li>
+<li>WebSocket progress streaming + hot reload can produce noisy <code>asyncio.CancelledError</code> traces during disconnects/reloads; not always a “real” failure, but it’s worth distinguishing from actual task crashes.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li>Refactored dataset audio handling to skip decode → re-encode and instead pass raw WAV bytes through to the STT client.</li>
+<li>Updated the loader path to use Hugging Face dataset loading with decoding disabled, specifically to avoid introducing a PyTorch/torchcodec dependency.</li>
+<li>Fixed a runtime regression in the evaluation runner: a dangling reference to a removed <code>audio_bytes</code> variable (switched to the correct value sourced from the sample object).</li>
+<li>Brought the app up locally (FastAPI/Uvicorn backend + Vite frontend) and re-ran an STT eval end-to-end to validate the new audio path.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li>Monitoring and debugging the eval run via live WebSocket progress updates while the backend hot-reloaded—useful, but it highlighted how fragile long-running async tasks can be when the dev server restarts mid-run.</li>
+<li>Drafting clearer “why this changed” notes for code review: the main justification is dependency control (avoid torchcodec/PyTorch) and preserving the original audio bytes for the API call.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

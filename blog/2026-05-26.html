@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>26 may 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">26 may 2026</h1>
+        <span class="post__date">tuesday</span>
+      </header>
+      <div class="post__body">
+<p>Today was mostly “make the tooling predictable” work: lots of context switching between browser tabs, local AI tooling, and repo navigation. I didn’t ship a big feature, but I did close a few loops and learned where my current AI-assisted workflow is brittle.</p>
+<h2>What I learned</h2>
+<ul>
+<li>LM Studio’s “OpenAI-compatible” local server is straightforward to stand up, but the failure modes matter: I hit cases where the server was up yet unusable (“no model selected”), and saw crashes from the backend while streaming responses. Watching the live logs was the fastest way to understand what state the server was actually in.</li>
+<li>Context limits are still the main constraint when asking for “explain this whole repo” style help. Image-in-prompt + long context pushed me into an “unsupported overflow policy” error, which is a good reminder to aggressively scope prompts and keep requests text-only unless the model/setup explicitly supports vision.</li>
+<li>Tool calling / sandbox integrations can fail independently of the model. A lot of the friction today wasn’t “bad answers,” it was tool availability and invocation issues that stopped the workflow before reasoning could even start.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li>No new product code today, but I did complete repo hygiene work: finished integrating a feature branch into <code>main</code>, cleaned up the extra worktree/branch, and re-pointed git remotes to SSH so pushing is frictionless going forward.</li>
+<li>Ran checks (tests + TypeScript) after the merge to confirm the branch cleanup didn’t leave things in a broken state.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li>Using LM Studio’s REST API (OpenAI-compatible) for local inference, focusing on streaming behavior and how to debug requests from server-side logs.</li>
+<li>A JavaScript “sandbox/tool” loop inside the chat workflow (rerun-heavy), mainly to understand what’s reliable and what breaks when prompts get large or include images.</li>
+<li>AI-assisted codebase orientation in OpenCode: trying to generate a useful repo overview from README + diagrams + file tree, then iterating on prompt size/structure when the assistant hit context/tool-call limits.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

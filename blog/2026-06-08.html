@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>8 june 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">8 june 2026</h1>
+        <span class="post__date">monday</span>
+      </header>
+      <div class="post__body">
+<p>Spent today bouncing between polishing my public presence and tightening up an evaluation pipeline. A lot of it was “small details that matter”: cache keys, parameter plumbing, and build tooling edge cases.</p>
+<h2>What I learned</h2>
+<ul>
+<li><strong>Cache keys need to encode all evaluation-relevant inputs.</strong> If an STT model/version isn’t part of the key, cached results can silently mix runs and break both <em>resumability</em> (after a crash) and <em>comparability</em> (across model versions).</li>
+<li><strong>Hugging Face datasets can download the full artifact even when you only iterate a small subset.</strong> Sampling (e.g., <code>max_samples=10</code>) limits <em>iteration</em>, not necessarily <em>download size</em>, so you need to plan around disk/network costs separately from evaluation time.</li>
+<li><strong>Claude Code access patterns are split across install and web.</strong> I dug through docs/search results to understand what’s available via desktop install vs “on the web” flows and what requirements/gating exist.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li><strong>Updated my GitHub profile README</strong>: refreshed links (personal site), project blurbs, and the tech stack section to make the landing page more scannable and current.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li><strong>Eval pipeline fixes (work-in-progress):</strong></li>
+<li>Planning a change to <strong>include <code>stt_model</code> (version/name) in the evaluation cache key</strong> to make cached artifacts safe for resuming and model comparisons.</li>
+<li>Threading new request/schema knobs like <strong><code>max_samples</code> and <code>stt_model</code></strong> through the API so they’re configurable instead of hardcoded.</li>
+<li>Lining up an <strong>ORM field + Alembic migration</strong> for persisting the model identifier used for a run.</li>
+<li><strong>Electron/Vite packaging:</strong> ran <code>pnpm</code> + <code>electron-builder</code> builds and chased down a failed packaging/build output, mostly focusing on getting to a clean, repeatable release build.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24 may 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">24 may 2026</h1>
+        <span class="post__date">sunday</span>
+      </header>
+      <div class="post__body">
+<p>Today was mostly a “spec → plan → implement → verify” loop in my local worktree, turning a plugin-system design into concrete code. I started by re-reading a locally stored (and intentionally gitignored) design spec, double-checking <code>.gitignore</code> behavior so I wouldn’t accidentally commit draft specs. From there, I generated an implementation plan, then kept iterating between docs, repo structure, and code until the migration was real and testable.</p>
+<h2>What I learned</h2>
+<ul>
+<li>It’s worth treating <em>gitignored</em> docs as first-class inputs (with guardrails): verifying ignore behavior up front reduced the “am I about to leak a draft?” anxiety and let me iterate faster.</li>
+<li>Large refactors go smoother when I force myself to reach “proof points” early (DB tests, typecheck, full test run, smoke-start), rather than waiting until the end to integrate everything.</li>
+<li>Documentation debt compounds during architecture shifts—especially when old concepts still exist as toggles/config flags—so I’m trying to clean “dead surface area” (docs + config) as part of the migration, not after.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li>Started implementing the new plugin system end-to-end:</li>
+<li>Added new plugin-related database tables and updated DB initialization/tests accordingly.</li>
+<li>Began wiring the supporting pieces across backend routes/config and the UI/API surface for plugin management.</li>
+<li>Did cleanup to make the repo reflect the new architecture:</li>
+<li>Rewrote integration docs to describe the MCP-style plugin approach instead of the legacy integration model.</li>
+<li>Updated contributor/agent docs (e.g., instructions/AGENTS notes) to match current reality.</li>
+<li>Added “status” banners to older speculative design docs and corrected stale claims.</li>
+<li>Removed deprecated configuration fields/toggles that referenced the old architecture (and cleaned up dependent tests/types).</li>
+<li>Verification checkpoint: ran the database tests, TypeScript checks, a full Python test suite, and a daemon smoke-start; ended with a commit for the doc + config cleanup and a short list of optional follow-ups (Electron smoke test, merge decision).</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li>Workflow resilience: resuming interrupted long-running assistant/planning steps without losing context, and using a dedicated <code>docs/.../plans</code> directory to keep the plan close to the code it drives.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

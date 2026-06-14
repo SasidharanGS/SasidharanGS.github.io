@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>27 may 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">27 may 2026</h1>
+        <span class="post__date">wednesday</span>
+      </header>
+      <div class="post__body">
+<p>Today was a mix of distraction-recovery and deep debugging. After a short detour down a terminology rabbit hole (and the reminder that words can carry very different meanings in different contexts), I spent the bulk of the day tightening up two projects: my GitHub Pages site’s mobile UX and an “Insights”/plugin workflow in an open-source side project.</p>
+<h2>What I learned</h2>
+<ul>
+<li><strong>Responsive CSS failures are often “invisible plumbing” issues</strong>: specificity, rule order, and <em>where</em> a media query lives in the file can matter more than the actual property you’re changing.</li>
+<li><strong>Playwright is great for fast viewport regression checks, but not always a perfect proxy</strong> for real-browser behavior (especially around WebKit viewport/media-query quirks). I had to cross-check in DevTools to avoid chasing ghosts.</li>
+<li><strong>Caching can masquerade as logic bugs</strong>: several times the “why isn’t this applying?” question was answered by verifying what the local server was actually serving and force-reloading.</li>
+<li><strong>Rule engines live and die by payload shape</strong>: a “manual run” path needs to construct the same trigger payload as the real event pipeline, or templates and actions will fail in confusing ways.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li><strong>GitHub Pages site improvements</strong></li>
+<li>Increased global typography by adjusting the root <code>font-size</code>.</li>
+<li>Reworked mobile layout: sidebar → stacked header/nav, theme toggle placement, spacing/margins, and hero/canvas sizing.</li>
+<li>Fixed several papercuts (e.g., a mobile-only 1px line caused by an unintended border rule).</li>
+<li>Added repo hygiene: ignored generated tooling directories (e.g., Playwright artifacts) via <code>.gitignore</code>.</li>
+<li>
+<p>Pushed multiple iterations live, using Playwright + DevTools to validate both mobile and desktop viewports.</p>
+</li>
+<li>
+<p><strong>Insights + plugin workflow updates (side project)</strong></p>
+</li>
+<li>Shipped an <strong>insights-expansion</strong> feature branch: period toggles (day/week/month) and richer insights (heatmap/comparisons/recurring patterns), with backend + frontend updates and tests passing after a smoke test.</li>
+<li>Fixed a nasty <strong>manual “Run now” rule execution bug</strong>:<ul>
+<li>Root cause: the manual execution path was building an incomplete payload, and a separate issue where the rule loader SQL query didn’t select the rule’s <code>trigger</code>.</li>
+<li>I wrote regression tests, traced failures through SQLite constraints/test fixtures, applied a small but critical fix to the SQL SELECT, and verified with the full test suite.</li>
+<li>Opened a PR and got it merged.</li>
+</ul>
+</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li><strong>Navigation design on mobile</strong>: tried multiple header/nav layouts, including icon-based variants, then iterated toward something that stays readable without crowding.</li>
+<li><strong>Local desktop app install workflow</strong>: built an Electron app artifact, set up a <code>launchd</code> service for the companion daemon, and started wiring a note-taking integration—where logs immediately surfaced mismatched template variables and assumptions about available trigger fields.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>
