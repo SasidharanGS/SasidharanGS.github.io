@@ -7,7 +7,7 @@
   var CELL               = 11;
   var SUBCELLS           = 2;
   var GAP                = 5;
-  var LINE_GAP           = 12;
+  var LINE_GAP           = 18;
   var FREEZE_RADIUS      = 90;
   var FLICKER_RATE       = 400;
   var ACCENT_FLICKER_RATE = 800;
@@ -150,6 +150,7 @@
       for (var ci = 0; ci < line.length; ci++) {
         var bitmap   = FONT[line[ci]] || FONT[' '];
         var isAccent = !!accent[ci];
+        var isRed    = isAccent && Math.random() < (1 / 3);   // only ~1/3 of the capital letters are red
         for (var row = 0; row < 7; row++) {
           var bits = bitmap[row];
           for (var col = 0; col < 5; col++) {
@@ -161,6 +162,7 @@
                     y: lineY + (row * sc + sr)  * cell,
                     current: isAccent ? randAccentChar() : randChar(),
                     accent: isAccent,
+                    red: isRed,
                     frozen: false
                   });
                 }
@@ -201,7 +203,7 @@
       var cell = cells[i];
       var a = computeAlpha(cell, mx, my, r);
       if (ctx.globalAlpha !== a) ctx.globalAlpha = a;
-      var color = cell.accent ? accent : fg;          // IDEAS / FREE / BETTER in the accent
+      var color = cell.red ? accent : fg;             // ~1/3 of the capital letters in the accent
       if (color !== lastColor) { ctx.fillStyle = color; lastColor = color; }
       ctx.fillText(cell.current, cell.x, cell.y);
     }

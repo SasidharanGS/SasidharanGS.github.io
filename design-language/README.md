@@ -81,7 +81,7 @@ for hierarchy, a hairline rule, and **one** functional accent.
 |---|---|---|---|
 | `--bg` | `#f5f5f0` | `#181818` | page / surface (warm, never pure #fff/#000) |
 | `--fg` | `#181818` | `#f5f5f0` | text, primary marks, filled states |
-| `--muted` | `#aaaaaa` | `#666666` | secondary text, labels, links at rest |
+| `--muted` | `#888888` | `#666666` | secondary text, labels, links at rest |
 | `--rule` | `#dddddd` | `#2e2e2e` | every 1px divider; also `--ink-0` |
 | `--accent` | `#a23c2e` | `#d2705f` | the one hue — live/active cues, selection, rare emphasis |
 | `--accent-strong` | `#88301f` | `#e08573` | accent hover/pressed |
