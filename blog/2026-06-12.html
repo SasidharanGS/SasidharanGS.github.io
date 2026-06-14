@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12 june 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">12 june 2026</h1>
+        <span class="post__date">friday</span>
+      </header>
+      <div class="post__body">
+<p>Today was mostly about tightening up the “last mile” around my personal 2brn project: making the UI theming story real (and testable), and putting some enforceable process around PR-based development so I stop relying on willpower.</p>
+<h2>What I learned</h2>
+<ul>
+<li><strong>Deriving duration from sampled activity data needs explicit semantics.</strong> I revisited the tradeoffs between “gap-to-next” derived spans, capping long gaps, persisting an <code>ended_at</code>, and session-grouping. The big takeaway: keep raw samples immutable, and make sessionization a policy-driven derivation so you can change heuristics without corrupting history.</li>
+<li><strong>GitHub workflow discipline is easiest with forcing functions.</strong> For solo/hobby repos, commit-heavy graphs are normal—but if I want PRs/issues to be first-class, branch protection + lightweight local hooks are the only reliable way to enforce it.</li>
+<li><strong>UI snapshot tests fail in surprisingly “silent” ways.</strong> My screenshot gallery tooling was rendering ErrorBoundaries because a stub route matched too broadly (e.g. <code>/settings</code> catching <code>/settings/exclusions</code>). Ordering and specificity in mocks matter as much as production routing.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li><strong>Sessionization + cleanup plumbing (backend):</strong></li>
+<li>Implemented a “sessionizer” layer to convert point-in-time samples into derived time blocks.</li>
+<li>Added maintenance routines to address capture-loop artifacts (e.g., orphaned screenshot files) and wired sweep/cleanup into periodic purge work.</li>
+<li>
+<p>Hardened test coverage, including timezone-independent verification passes.</p>
+</li>
+<li>
+<p><strong>Classification reliability improvements:</strong></p>
+</li>
+<li>Added <strong>classification backfill</strong> behavior to reduce “unclassified” gaps caused by sparse OCR, failed inference, or queue drops.</li>
+<li>
+<p>Implemented a <strong>metadata-only classification fallback</strong> for cases where OCR is too thin but app/window context is still useful.</p>
+</li>
+<li>
+<p><strong>UI theming infrastructure (modern ↔ minimal):</strong></p>
+</li>
+<li>Introduced a skin/theme architecture (ThemeContext + registry approach), defaulting to modern with persistence (local storage).</li>
+<li>
+<p>Landed the minimal “app chrome” and then iteratively ported screens in batches (home/chat/journal/blog → timeline/insights → plugins/settings/instructions), verifying both themes and fixing screenshot capture edge cases.</p>
+</li>
+<li>
+<p><strong>Repo workflow enforcement:</strong></p>
+</li>
+<li>Added guards to prevent committing directly to <code>main</code> and configured <strong>GitHub rulesets/branch protections</strong> so the “issue → branch → PR → review → merge” flow is the default.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li><strong>Evaluation harness roadmap planning:</strong> sketched an expansion path for an evaluation tool (production hardening, CI/CD reporting, observability, dataset management) with the idea of executing via PR-sized slices.</li>
+<li><strong>Local provider wiring:</strong> poked at running the app against a local OpenAI-compatible endpoint (for chat + embeddings) to keep the stack usable offline.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

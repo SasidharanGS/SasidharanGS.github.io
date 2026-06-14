@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>29 may 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">29 may 2026</h1>
+        <span class="post__date">friday</span>
+      </header>
+      <div class="post__body">
+<p>I spent today bouncing between a couple of small-but-important reliability fixes: one for my GitHub Pages site (a subtle canvas rendering bug), and another for my OpenCode personal-agent plugin (where packaging/deploy details were causing missing skills and even crashes). A theme emerged: when behavior is “mostly working,” tight verification loops (tests + logs + a reproducible harness) are what keep you from chasing ghosts.</p>
+<h2>What I learned</h2>
+<ul>
+<li><strong>Canvas state bugs can be “logic-flow” bugs, not math bugs.</strong> My dimming/hover-brightness issue came down to an early-return path that skipped applying the default alpha when no mouse movement had occurred.</li>
+<li><strong>Playwright is useful even for non-UI logic assertions.</strong> Sampling pixel/alpha values and taking screenshots gave me a concrete way to prove the regression and confirm the fix, instead of relying on “looks right.”</li>
+<li><strong>Plugin packaging matters as much as plugin code.</strong> In my OpenCode plugin work, multiple failures traced back to distribution details:</li>
+<li>Skill files being silently skipped due to <strong>missing required frontmatter</strong>.</li>
+<li>A plugin showing up “by name” but failing to load because <strong><code>dist/plugin.js</code> wasn’t actually present</strong> in the installed artifact.</li>
+<li>“Works locally” setups breaking due to <strong>cache + install-hook assumptions</strong>.</li>
+<li><strong>Guardrails prevent reintroducing deployment drift.</strong> If a repo commits built artifacts (like <code>dist/plugin.js</code>), it’s easy for <code>dist/</code> to drift from <code>src/</code> unless CI/tests enforce sync.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li><strong>GitHub Pages fix:</strong> Updated the site JS so the canvas <strong>dims by default regardless of mouse presence</strong>, then brightens on hover. Verified with Playwright and pushed the change.</li>
+<li><strong>OpenCode personal-agent plugin stabilization:</strong></li>
+<li>Fixed missing skills/commands by ensuring the skill docs include the expected metadata/frontmatter and adding missing command docs where needed.</li>
+<li>Reworked the deployment workflow so it’s less fragile (bundling instead of copying half-resolved TypeScript).</li>
+<li>Added a <strong>“dist drift guard” test</strong> that rebuilds the bundle and compares it to committed <code>dist/plugin.js</code>, and sanity-checked it by intentionally introducing drift and confirming the test fails.</li>
+<li>Did repo hygiene: cleaned up stale worktrees/branches after merging PRs.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li><strong>Hardening install UX for plugins.</strong> I explored moving from a “drop a file in a config directory” style install (which tends to show up as a file path and encourages drift) toward a more reproducible git/npm-style install, plus a clearer Quickstart that separates:
+  1) plugin install<br>
+  2) copying “extras” (skills/commands)<br>
+  3) environment variables and verification steps (logs + a known slash command like <code>/wrap</code>).</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>31 may 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">31 may 2026</h1>
+        <span class="post__date">sunday</span>
+      </header>
+      <div class="post__body">
+<p>Spent most of today deep in the weeds of agent tooling and “second brain” integration, with a side quest into local-model tooling and eval metrics. The main theme: getting a personal-agent plugin truly verifiable end-to-end instead of “it probably works.”</p>
+<h2>What I learned</h2>
+<ul>
+<li><strong>Plugin build artifacts matter for real installs.</strong> If your plugin loader can’t rely on <code>prepare</code>, you need to commit built output (and ideally enforce it with a “dist stays in sync” test).</li>
+<li><strong>Joplin Web Clipper auth is a sharp edge.</strong> A stale token can fail writes while other read paths still appear to work (especially if some reads are coming from a local/SQLite path). Without strict error propagation, this becomes a silent failure mode.</li>
+<li><strong>Search semantics can create security issues.</strong> Tokenized/full-text search can unintentionally match and pull in sensitive notes, which then get injected into prompts. That’s a real “blast radius” problem if you’re auto-loading “project notes” into system context.</li>
+<li><strong>Local dev servers: auth + ports + GUI env vars are tricky.</strong> For the OpenCode server, I ended up having to reason carefully about which process owned which port, what was actually serving the SPA vs the JSON API, and how Basic Auth credentials get set (and how environment variables propagate—or don’t—into GUI apps).</li>
+<li><strong>Local LLM tooling tradeoffs.</strong> I watched comparisons of Ollama/LM Studio/llama.cpp and then actually tried LM Studio with Sarvam model variants/quantizations, plus looked into Mac resource monitoring to understand whether bigger GGUFs would push me into swap.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li><strong>Fix in my OpenCode personal-agent project:</strong> updated the Joplin client to use the correct <code>/search</code> endpoint (instead of <code>/notes</code> with ignored query params), rebuilt <code>dist</code>, and re-ran the full test suite to confirm the change and artifacts match.</li>
+<li><strong>Hardening + documentation:</strong> wrote up a concrete explanation of the Joplin integration failure modes (stale token, swallowed errors) and the much more serious <em>prompt data leakage</em> vector via note search/snippets.</li>
+<li><strong>E2E verification workflow:</strong> put together a repeatable checklist for validating plugin hooks, slash commands, pattern detection, and reflection/idle behavior through the OpenCode web/API paths, including log-based evidence.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li><strong>LLM security + exploit writeups (learning only).</strong> Read through a few vulnerability analyses (buffer overflow / ROP-chain style writeups) to understand how modern exploit writeups are structured and what details matter in root-cause explanations.</li>
+<li><strong>Local LLM judge idea for eval harnesses.</strong> Sketched an “indic-eval” concept: call external APIs for STT/TTS/translation but use a local judge model + caching to control cost/rate limits, and explored metrics like WER vs “LLM-WER” and intent/entity preservation scoring.</li>
+<li><strong>Sarvam ecosystem reconnaissance.</strong> Looked through Sarvam’s platform pages, GitHub org, Hugging Face models, and community Discord to understand what’s public, what’s supported, and where an open-source contribution could be high leverage.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>

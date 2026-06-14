@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9 june 2026 — sasidharan gs</title>
+  <link rel="stylesheet" href="../design-language/minimal_text.css">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="../js/theme.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar__identity">
+      <a class="sidebar__name" href="../index.html">sasidharan gs</a>
+      <span class="sidebar__role">software engineer</span>
+    </div>
+    <nav>
+      <a href="../index.html#about">about</a>
+      <a href="../index.html#projects">projects</a>
+      <a href="../index.html#experience">experience</a>
+      <a href="../index.html#contact">contact</a>
+      <div class="nav-sep"></div>
+      <a href="index.html" class="active">blog</a>
+    </nav>
+    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+      <button data-theme="light">light</button>
+      <button data-theme="dark">dark</button>
+      <button data-theme="system">system</button>
+    </div>
+  </aside>
+
+  <nav class="mobile-nav" aria-label="mobile navigation">
+    <a class="mobile-nav__name" href="../index.html">sasidharan gs</a>
+    <div class="mobile-nav__group">
+      <a href="../index.html#about" aria-label="about">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a>
+      <a href="../index.html#projects" aria-label="projects">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </a>
+      <a href="../index.html#experience" aria-label="experience">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      </a>
+      <a href="../index.html#contact" aria-label="contact">
+        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 4 10 9 10-9"/></svg>
+      </a>
+    </div>
+    <a href="index.html" class="mobile-nav__blog-link active">blog</a>
+    <div class="mobile-nav__group">
+      <button data-theme="light" aria-label="light mode">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button data-theme="dark" aria-label="dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      </button>
+      <button data-theme="system" aria-label="system mode">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <article>
+      <header class="post__header">
+        <h1 class="post__title">9 june 2026</h1>
+        <span class="post__date">tuesday</span>
+      </header>
+      <div class="post__body">
+<p>Today was mostly about tightening up “how things work” docs—both on the design side (for my personal site) and on the engineering side (for a multi-surface app). I tried to turn a bunch of implicit knowledge into explicit, reusable artifacts: design tokens and interaction rules for the website, and repeatable workflows for screenshot export, testing, and repo hygiene.</p>
+<h2>What I learned</h2>
+<ul>
+<li>A design language doc gets dramatically more useful when it’s token-first (colors/typography/spacing) <em>and</em> includes interaction/animation rules plus “technical constraints” (what the actual HTML/CSS/JS implementation can/can’t do).</li>
+<li>Automated UI screenshot capture is much easier to maintain if you generate:</li>
+<li>deterministic filenames (route/section/theme/variant)</li>
+<li>an <code>index.html</code> gallery for fast review</li>
+<li>and a single command that anyone can run to regenerate the set.</li>
+<li>Headless/Playwright runs can surface UI assumptions: a page that’s “fine” in the real app can render blank/crash if you don’t stub required APIs (e.g., status endpoints or Electron preload APIs).</li>
+<li>When a dev server chooses a dynamic port, the Electron main process should consume the actual resolved dev-server URL instead of assuming a fixed <code>localhost:PORT</code>—otherwise you can silently load the wrong service if there’s a port conflict.</li>
+<li>Repo maintenance details matter: <code>.gitignore</code> decisions can block publishing documentation assets (like screenshots), and build artifacts owned by <code>root</code> can break future builds until permissions are fixed.</li>
+</ul>
+<h2>What I built</h2>
+<ul>
+<li>A more complete <code>DESIGN-LANGUAGE.md</code> for my GitHub Pages personal site, documenting:</li>
+<li>color tokens, typography scale, spacing/layout rules</li>
+<li>component patterns and interaction rules</li>
+<li>a short “export blurb” + notes/links intended for reuse in design tooling.</li>
+<li>A Playwright-based screenshot export workflow for a desktop app UI:</li>
+<li>captures multiple sections across light/dark themes</li>
+<li>outputs ~30 PNGs plus an HTML gallery under <code>docs/screenshots/</code></li>
+<li>includes guidance on how to rerun the capture and regenerate the gallery.</li>
+<li>A spec/roadmap doc for automated screenshot exports + a separate comprehensive testing roadmap for a feature branch, including how to handle a timezone-related regression in an “hourly heatmap” style query by fixing seed data/expectations.</li>
+</ul>
+<h2>Experimenting with</h2>
+<ul>
+<li>Using Playwright not just for tests, but as a “visual contract” tool (screenshots-as-artifacts) to support UI/UX review and theming discussions.</li>
+<li>Improving repo organization for a project with desktop + mobile codebases:</li>
+<li>comparing “separate repos with a strict API contract” vs a true monorepo</li>
+<li>leaning toward keeping runtimes separate and tightening cohesion via an explicit API spec (e.g., OpenAPI) and shared typed clients.</li>
+</ul>
+      </div>
+      <a class="post__back" href="index.html">← all posts</a>
+    </article>
+  </main>
+</body>
+</html>
