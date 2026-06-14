@@ -1,0 +1,329 @@
+/* =============================================================================
+   MINIMAL_TEXT — a minimal, typographic design language.
+   "typography is the design. if it doesn't need to be there, remove it."
+
+   One drop-in stylesheet: the typeface, the tokens (light + dark + system),
+   a base reset, and the full component layer as framework-agnostic classes.
+   Two colors + one muted accent. Inter 300/400 only. Square (one 3px radius).
+   No shadows, no gradients, no rgba overlays, no blur. Whitespace is structural.
+
+   Distilled from the "sasidharan gs" system. Portable & renamable: every class
+   is prefixed `mt-`; every value is a custom property. Theme via
+   <html data-theme="light|dark"> (omit to follow the OS).
+   ============================================================================= */
+
+/* ---- Typeface -------------------------------------------------------------- */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;            /* variable axis; we only ever use 300 & 400 */
+  font-display: swap;
+  src: url("./assets/fonts/Inter-Variable.ttf") format("truetype-variations");
+}
+
+/* ---- Tokens: light (default) ---------------------------------------------- */
+:root,
+:root[data-theme="light"] {
+  /* Palette — two colors + a muted tint. The warmth (vs pure #fff/#000) is
+     deliberate: it reads as *designed*, not default. */
+  --bg: #f5f5f0;            /* warm off-white */
+  --fg: #181818;            /* near-black */
+  --muted: #aaaaaa;         /* secondary text, links at rest */
+  --rule: #dddddd;          /* every 1px divider; also --ink-0 */
+
+  /* The ONE functional hue — a muted brick red. Used sparingly: live/active
+     cues, selected state, rare emphasis. Never decoration, never a 2nd brand
+     color, never part of the intensity encoding. */
+  --accent: #a23c2e;
+  --accent-strong: #88301f; /* hover / pressed */
+
+  /* Semantic aliases */
+  --surface: var(--bg);
+  --text-primary: var(--fg);
+  --text-secondary: var(--muted);
+  --text-link: var(--muted);
+  --text-link-hover: var(--fg);
+  --text-accent: var(--accent);
+  --border: var(--rule);
+  --pill-bg: var(--rule);
+
+  /* Intensity ramp — monochrome magnitude (NOT hue). A tint of --fg over --bg,
+     so it flips automatically in dark mode. Encodes "more vs less" (activity,
+     focus, volume) without adding color. --ramp-strength scales the contrast. */
+  --ramp-strength: 1;
+  --ink-0: var(--rule);
+  --ink-1: color-mix(in oklab, var(--fg) calc(18% * var(--ramp-strength)), var(--bg));
+  --ink-2: color-mix(in oklab, var(--fg) calc(38% * var(--ramp-strength)), var(--bg));
+  --ink-3: color-mix(in oklab, var(--fg) calc(62% * var(--ramp-strength)), var(--bg));
+  --ink-4: color-mix(in oklab, var(--fg) calc(88% * var(--ramp-strength)), var(--bg));
+
+  /* Type — Inter only, two weights. Hierarchy = size + tracking + whitespace. */
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --weight-light: 300;     /* almost everything */
+  --weight-regular: 400;   /* sparing emphasis only — never 700+/bold */
+
+  --text-2xs: 0.65rem;
+  --text-xs: 0.7rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8rem;
+  --text-md: 0.85rem;
+  --text-lg: 0.95rem;
+  --text-xl: 1.05rem;
+  --text-2xl: 1.4rem;
+  --text-display: clamp(1.6rem, 4vw, 2.9rem);
+
+  --tracking-tight: -0.02em;   /* large display */
+  --tracking-name: 0.02em;
+  --tracking-snug: 0.05em;     /* pills, chips */
+  --tracking-wide: 0.1em;      /* dates, links */
+  --tracking-wider: 0.15em;
+  --tracking-nav: 0.2em;
+  --tracking-label: 0.25em;    /* section labels */
+
+  --leading-tight: 1.2;
+  --leading-snug: 1.5;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.7;
+  --leading-loose: 1.75;
+
+  --measure: 560px;            /* prose reading width — never full-width text */
+
+  /* Spacing — a 5-step scale. 8rem section padding is the signature; never
+     reduce it on desktop. Whitespace is active, not empty. */
+  --space-xs: 0.5rem;   /*   8px */
+  --space-sm: 1rem;     /*  16px */
+  --space-md: 2rem;     /*  32px */
+  --space-lg: 4rem;     /*  64px */
+  --space-xl: 8rem;     /* 128px — section rhythm (signature) */
+
+  /* Structure */
+  --border-width: 1px;
+  --radius-pill: 3px;          /* the ONLY radius in the system */
+  --sidebar-w: clamp(168px, 13vw, 208px);
+  --topbar-h: 56px;
+  --mobilenav-h: 58px;
+  --panel-w: clamp(264px, 22vw, 320px);
+
+  /* Motion — there is almost none. Color transitions only. */
+  --transition: color 0.2s ease;
+  --ease: ease;
+}
+
+/* ---- Tokens: dark --------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --bg: #181818;
+  --fg: #f5f5f0;
+  --muted: #666666;
+  --rule: #2e2e2e;
+  --accent: #d2705f;        /* lifted + warmer so it reads on the dark ground */
+  --accent-strong: #e08573;
+}
+
+/* System mode: follow the OS when no explicit theme is set. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #181818;
+    --fg: #f5f5f0;
+    --muted: #666666;
+    --rule: #2e2e2e;
+    --accent: #d2705f;
+    --accent-strong: #e08573;
+  }
+}
+
+/* ---- Base ----------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-weight: var(--weight-light);
+  font-size: 16px;
+  line-height: var(--leading-relaxed);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--text-link); text-decoration: none; transition: var(--transition); }
+a:hover { color: var(--text-link-hover); }
+button { font-family: inherit; font-weight: inherit; color: inherit; background: none; border: none; padding: 0; cursor: pointer; }
+::selection { background: var(--fg); color: var(--bg); }
+:where(:focus-visible) { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+/* =============================================================================
+   TYPOGRAPHY
+   ============================================================================= */
+.mt-display { font-size: var(--text-display); font-weight: var(--weight-light); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); margin: 0; }
+.mt-title   { font-size: var(--text-2xl); font-weight: var(--weight-regular); letter-spacing: var(--tracking-name); line-height: var(--leading-tight); margin: 0; }
+.mt-label   { font-size: var(--text-2xs); font-weight: var(--weight-light); letter-spacing: var(--tracking-label); color: var(--muted); margin: 0; }
+.mt-eyebrow { font-size: var(--text-2xs); font-weight: var(--weight-light); letter-spacing: var(--tracking-wide); color: var(--muted); margin: 0; }
+.mt-prose   { font-size: var(--text-lg); font-weight: var(--weight-light); line-height: var(--leading-loose); color: var(--fg); max-width: var(--measure); }
+.mt-prose p { margin: 0 0 var(--space-sm); }
+.mt-mono    { font-family: var(--font-mono); font-size: var(--text-2xs); letter-spacing: var(--tracking-wide); color: var(--muted); }
+.mt-measure { max-width: var(--measure); }
+.mt-em      { font-weight: var(--weight-regular); }              /* sparing emphasis */
+.mt-accent  { color: var(--accent); }
+.mt-muted   { color: var(--muted); }
+
+/* =============================================================================
+   RULES & LAYOUT
+   ============================================================================= */
+.mt-rule { border: 0; border-top: var(--border-width) solid var(--rule); margin: 0; }
+.mt-section { padding-block: var(--space-xl); }                  /* the signature rhythm */
+.mt-stack > * + * { margin-top: var(--space-md); }
+.mt-row { display: flex; align-items: center; gap: var(--space-sm); }
+.mt-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+
+/* =============================================================================
+   BUTTONS
+   ghost (default): hairline box, muted→fg on hover, only color animates.
+   solid: the one accent fill (primary action). plain: a text link.
+   ============================================================================= */
+.mt-btn {
+  display: inline-flex; align-items: center; gap: var(--space-xs);
+  font: inherit; font-size: var(--text-2xs); font-weight: var(--weight-light);
+  letter-spacing: var(--tracking-wide);
+  padding: 0.5rem 0.85rem; border: var(--border-width) solid var(--rule);
+  background: none; color: var(--muted); cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.mt-btn:hover { color: var(--fg); border-color: var(--fg); }
+.mt-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--bg); letter-spacing: var(--tracking-wide); }
+.mt-btn--solid:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--bg); }
+.mt-btn--plain { border-color: transparent; padding-inline: 0; }
+.mt-btn--plain:hover { border-color: transparent; }
+
+/* =============================================================================
+   FORM FIELDS — borderless, a single bottom hairline. lowercase labels.
+   ============================================================================= */
+.mt-field { display: flex; flex-direction: column; gap: var(--space-xs); }
+.mt-input, .mt-select {
+  font: inherit; font-size: var(--text-base); font-weight: var(--weight-light);
+  color: var(--fg); background: none; width: 100%;
+  border: 0; border-bottom: var(--border-width) solid var(--rule);
+  padding: 0.4rem 0; outline: none; border-radius: 0;
+  transition: border-color 0.2s ease;
+}
+.mt-input::placeholder { color: var(--muted); }
+.mt-input:focus, .mt-select:focus { border-color: var(--fg); }
+.mt-input--box { border: var(--border-width) solid var(--rule); padding: 0.65rem var(--space-sm); }
+.mt-select { appearance: none; cursor: pointer; }
+
+/* =============================================================================
+   CARDS — no background, no shadow, no radius. The structure IS the card.
+   ============================================================================= */
+.mt-card { border: var(--border-width) solid var(--rule); padding: var(--space-md); display: flex; flex-direction: column; gap: var(--space-md); }
+.mt-card--rule { border: 0; border-top: var(--border-width) solid var(--rule); padding: var(--space-md) 0 0; }   /* the "card" is just a top hairline */
+
+/* =============================================================================
+   PILLS & CHIPS — the only place the 3px radius appears.
+   pill: a static tag. chip: selectable; accent fill when [data-active]/.is-active.
+   ============================================================================= */
+.mt-pill {
+  display: inline-block; background: var(--pill-bg); color: var(--muted);
+  border-radius: var(--radius-pill); padding: 2px 7px;
+  font-size: var(--text-2xs); letter-spacing: var(--tracking-snug); font-weight: var(--weight-light); white-space: nowrap;
+}
+.mt-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: var(--text-2xs); letter-spacing: var(--tracking-snug); font-weight: var(--weight-light);
+  background: none; color: var(--muted);
+  border: var(--border-width) solid var(--rule); border-radius: var(--radius-pill);
+  padding: 4px 11px; cursor: pointer; white-space: nowrap;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+.mt-chip:hover { color: var(--fg); border-color: var(--muted); }
+.mt-chip[data-active], .mt-chip.is-active { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: var(--weight-regular); }
+
+/* =============================================================================
+   SEGMENTED CONTROL (day/week/month, theme) — hairline frame, accent active.
+   ============================================================================= */
+.mt-segmented { display: inline-flex; border: var(--border-width) solid var(--rule); padding: 2px; }
+.mt-segmented > button { font: inherit; font-size: var(--text-2xs); letter-spacing: var(--tracking-wide); font-weight: var(--weight-light); color: var(--muted); padding: 4px 12px; transition: color 0.2s ease, background 0.2s ease; }
+.mt-segmented > button[aria-pressed="true"], .mt-segmented > button.is-active { background: var(--accent); color: var(--bg); font-weight: var(--weight-regular); }
+
+/* =============================================================================
+   SWITCH — square-cornered hairline track, accent when on.
+   ============================================================================= */
+.mt-switch { position: relative; width: 34px; height: 18px; border-radius: 9px; border: var(--border-width) solid var(--rule); background: var(--bg); cursor: pointer; padding: 0; transition: background 0.2s ease, border-color 0.2s ease; flex: 0 0 auto; }
+.mt-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--fg); transition: left 0.2s ease, background 0.2s ease; }
+.mt-switch[aria-pressed="true"], .mt-switch.is-on { background: var(--accent); border-color: var(--accent); }
+.mt-switch[aria-pressed="true"]::after, .mt-switch.is-on::after { left: 17px; background: var(--bg); }
+
+/* =============================================================================
+   INTENSITY — the monochrome encoder. cells, bars, dots all share --ink-*.
+   ============================================================================= */
+.mt-ink-0 { background: var(--ink-0); } .mt-ink-1 { background: var(--ink-1); }
+.mt-ink-2 { background: var(--ink-2); } .mt-ink-3 { background: var(--ink-3); }
+.mt-ink-4 { background: var(--ink-4); }
+.mt-spark { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; align-items: end; height: 46px; }
+.mt-spark > i { display: block; align-self: stretch; }          /* set height + an ink class per cell */
+.mt-statelabel { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-2xs); letter-spacing: var(--tracking-wide); color: var(--muted); font-weight: var(--weight-light); white-space: nowrap; }
+.mt-statelabel > i { width: 7px; height: 7px; flex: 0 0 auto; }  /* + an ink class */
+
+/* =============================================================================
+   NAVIGATION
+   sidebar (desktop): text nav, active = accent + a 2px accent bar.
+   bottom bar (mobile): the same destinations; 3 variants (labeled/icons/text).
+   ============================================================================= */
+.mt-nav { display: flex; flex-direction: column; gap: 5px; }
+.mt-nav-item { position: relative; display: flex; align-items: center; gap: var(--space-xs); width: 100%; text-align: left; padding: 7px 0 7px 12px; color: var(--muted); font-size: var(--text-sm); letter-spacing: var(--tracking-wide); font-weight: var(--weight-light); transition: color 0.2s ease; }
+.mt-nav-item:hover { color: var(--fg); }
+.mt-nav-item[aria-current="page"], .mt-nav-item.is-active { color: var(--accent); font-weight: var(--weight-regular); }
+.mt-nav-item[aria-current="page"]::before, .mt-nav-item.is-active::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 2px; height: 15px; background: var(--accent); }
+
+.mt-bottomnav { display: flex; align-items: stretch; height: var(--mobilenav-h); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); border-top: var(--border-width) solid var(--rule); }
+.mt-tab { position: relative; flex: 1 1 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 52px; color: var(--muted); font-size: 0.6rem; letter-spacing: var(--tracking-wide); transition: color 0.2s ease; }
+.mt-tab[aria-current="page"], .mt-tab.is-active { color: var(--accent); font-weight: var(--weight-regular); }
+.mt-bottomnav--icons .mt-tab > .mt-tab__label { display: none; }
+.mt-bottomnav--icons .mt-tab[aria-current="page"]::before, .mt-bottomnav--icons .mt-tab.is-active::before { content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 18px; height: 2px; background: var(--accent); }
+.mt-bottomnav--text .mt-tab > .mt-tab__icon { display: none; }
+.mt-bottomnav--text .mt-tab { font-size: var(--text-xs); }
+
+/* =============================================================================
+   SHEETS / OVERLAYS (mobile) — opaque panel, NO dimming scrim (rgba is banned);
+   a transparent tap-catcher closes a partial sheet. No slide-in animation.
+   ============================================================================= */
+.mt-sheet { position: fixed; left: 0; right: 0; z-index: 60; background: var(--bg); display: flex; flex-direction: column; box-sizing: border-box; }
+.mt-sheet--full { top: 0; bottom: 0; }                          /* more / detail */
+.mt-sheet--top  { top: var(--topbar-h); max-height: calc(100% - var(--topbar-h)); border-bottom: var(--border-width) solid var(--rule); } /* drops from a top icon */
+.mt-sheet__header { display: flex; align-items: center; justify-content: space-between; height: var(--topbar-h); padding: 0 var(--space-sm); border-bottom: var(--border-width) solid var(--rule); flex: 0 0 auto; }
+.mt-sheet__body { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-sm); }
+.mt-scrim-catch { position: fixed; inset: 0; z-index: 55; background: transparent; border: 0; } /* invisible outside-tap closer */
+
+/* =============================================================================
+   MESSAGE BUBBLES (native chat) — square-ish (the 3px pill), monochrome.
+   you = filled & right; them = tinted & left.
+   ============================================================================= */
+.mt-bubbles { display: flex; flex-direction: column; gap: var(--space-sm); }
+.mt-bubble { max-width: 84%; padding: 9px 13px; border-radius: var(--radius-pill); font-size: var(--text-base); line-height: var(--leading-normal); font-weight: var(--weight-light); }
+.mt-bubble--you  { align-self: flex-end; background: var(--fg); color: var(--bg); }
+.mt-bubble--them { align-self: flex-start; background: var(--ink-1); color: var(--fg); }
+
+/* =============================================================================
+   EMPTY STATE — minimal_text, centered. dashed frame optional.
+   ============================================================================= */
+.mt-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-md); text-align: center; padding: var(--space-xl) var(--space-lg); min-height: 280px; color: var(--muted); }
+.mt-empty--dashed { border: var(--border-width) dashed var(--rule); }
+
+/* =============================================================================
+   ICON — thin-line only: stroke 1.5–1.8, round caps, currentColor, no fill.
+   (Use inline <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">.)
+   ============================================================================= */
+.mt-icon { display: block; flex: 0 0 auto; width: 1em; height: 1em; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+
+/* =============================================================================
+   RESPONSIVE — desktop sidebar gives way to the bottom bar at ≤640.
+   Breakpoints: ≤640 phone · 641–1024 tablet (panels hidden) · ≥1025 desktop.
+   ============================================================================= */
+.mt-desktop-only { display: revert; }
+.mt-mobile-only  { display: none; }
+@media (max-width: 1024px) { .mt-grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .mt-desktop-only { display: none !important; }
+  .mt-mobile-only  { display: revert !important; }
+  .mt-section { padding-block: var(--space-lg); }   /* the only place the 8rem rhythm relaxes */
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }

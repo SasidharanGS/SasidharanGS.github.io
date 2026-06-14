@@ -12,7 +12,9 @@
   function syncButtons() {
     var mode = current();
     document.querySelectorAll('button[data-theme]').forEach(function (btn) {
-      btn.classList.toggle('active', btn.dataset.theme === mode);
+      var on = btn.dataset.theme === mode;
+      btn.classList.toggle('active', on);          // mobile icon buttons
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false'); // mt-segmented
     });
   }
 

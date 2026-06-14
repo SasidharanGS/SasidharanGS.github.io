@@ -239,25 +239,23 @@ def main() -> int:
 
     con = open_db(db_path())
     if con is None:
-        print(f"No readable 2brn DB at {db_path()} — nothing to publish.")
-        return 0
-
-    try:
-        all_posts = fetch_posts(con)
-    finally:
-        con.close()
-
-    # Manual posts win their date — drop any DB post that would collide.
-    manual_dates = {p["date"] for p in MANUAL_POSTS}
-    shadowed = [d for d, _ in all_posts if d in manual_dates]
-    if shadowed:
-        print("skipping DB post(s) shadowed by a manual post: " + ", ".join(shadowed))
-    all_posts = [(d, c) for d, c in all_posts if d not in manual_dates]
+        print(f"No readable 2brn DB at {db_path()} — rebuilding the index from manual posts only.")
+        all_posts = []
+    else:
+        try:
+            all_posts = fetch_posts(con)
+        finally:
+            con.close()
+        # Manual posts win their date — drop any DB post that would collide.
+        manual_dates = {p["date"] for p in MANUAL_POSTS}
+        shadowed = [d for d, _ in all_posts if d in manual_dates]
+        if shadowed:
+            print("skipping DB post(s) shadowed by a manual post: " + ", ".join(shadowed))
+        all_posts = [(d, c) for d, c in all_posts if d not in manual_dates]
 
     selected = select_posts(all_posts, args)
     if not selected:
-        print("No matching posts to publish.")
-        return 0
+        print("No posts selected to (re)generate — refreshing the index only.")
 
     post_tmpl = load_template("post.html")
     index_tmpl = load_template("index.html")

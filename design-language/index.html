@@ -1,0 +1,301 @@
+<!-- @dsCard group="Brand" viewport="1180x2400" name="minimal_text — design language" subtitle="portable distillation: the three laws, color + intensity ramp, type, spacing, voice, the full component layer, responsive/mobile patterns, and the exclusions — rendered live" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>minimal_text — a minimal, typographic design language</title>
+<link rel="stylesheet" href="minimal_text.css" />
+<style>
+  /* guide-only scaffolding — stays inside the language (square, hairlines, no shadow) */
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 var(--space-md); }
+  .guide-section { padding-block: var(--space-lg); border-top: 1px solid var(--rule); }
+  .guide-section:first-of-type { border-top: 0; }
+  .guide-head { display: flex; align-items: baseline; gap: var(--space-md); margin-bottom: var(--space-md); }
+  .guide-head .mt-label { flex: 0 0 auto; }
+  .grid { display: grid; gap: var(--space-md); }
+  .cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .swatch { border: 1px solid var(--rule); }
+  .swatch .chip { height: 84px; }
+  .swatch .meta { padding: 8px 10px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; gap: 8px; }
+  .specrow { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-md); align-items: baseline; padding: 10px 0; border-top: 1px solid var(--rule); }
+  .specrow:first-child { border-top: 0; }
+  .demo { border: 1px solid var(--rule); padding: var(--space-md); display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
+  .demo.col { flex-direction: column; align-items: stretch; }
+  .phone { width: 300px; border: 1px solid var(--rule); }
+  .phone .bar { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid var(--rule); }
+  .topbar { position: static !important; }
+  .dont { color: var(--muted); }
+  .dont li { margin: 4px 0; }
+  ul.clean { list-style: none; padding: 0; margin: 0; }
+  @media (max-width: 760px) { .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; } .specrow { grid-template-columns: 1fr; gap: 6px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================ MASTHEAD ============================ -->
+  <header class="guide-section" style="padding-top: var(--space-lg);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:var(--space-md); flex-wrap:wrap;">
+      <div>
+        <p class="mt-eyebrow">a portable design language</p>
+        <h1 class="mt-display" style="margin-top:8px;">minimal_text</h1>
+        <p class="mt-prose" style="margin-top:var(--space-sm);">typography is the design. two colors, one typeface, generous whitespace — nothing decorates. if it doesn’t need to be there, remove it.</p>
+      </div>
+      <div class="mt-segmented" id="theme" role="group" aria-label="theme">
+        <button type="button" data-theme-set="light" aria-pressed="true">light</button>
+        <button type="button" data-theme-set="system" aria-pressed="false">system</button>
+        <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================ THE THREE LAWS ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">the three laws</span></div>
+    <div class="grid cols-3">
+      <div><h3 class="mt-title">remove it</h3><p class="mt-prose" style="font-size:var(--text-base);">if it doesn’t need to be there, take it out. restraint is the default — one thousand no’s for every yes.</p></div>
+      <div><h3 class="mt-title">type is the design</h3><p class="mt-prose" style="font-size:var(--text-base);">no decorative elements. hierarchy is size, letter-spacing, and whitespace — never weight, color, or ornament.</p></div>
+      <div><h3 class="mt-title">whitespace is active</h3><p class="mt-prose" style="font-size:var(--text-base);">the space does the work. the 8rem section rhythm is structural, not padding to trim.</p></div>
+    </div>
+  </section>
+
+  <!-- ============================ COLOR ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">color</span><span class="mt-eyebrow">two colors + one muted accent. theme-aware — try the toggle.</span></div>
+    <div class="grid cols-4">
+      <div class="swatch"><div class="chip" style="background:var(--bg); border-bottom:1px solid var(--rule);"></div><div class="meta"><span class="mt-mono">--bg</span></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--fg);"></div><div class="meta"><span class="mt-mono">--fg</span></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--muted);"></div><div class="meta"><span class="mt-mono">--muted</span></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rule);"></div><div class="meta"><span class="mt-mono">--rule</span></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--accent);"></div><div class="meta"><span class="mt-mono">--accent</span></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--accent-strong);"></div><div class="meta"><span class="mt-mono">--accent-strong</span></div></div>
+    </div>
+
+    <div class="guide-head" style="margin-top:var(--space-lg);"><span class="mt-label">intensity ramp</span><span class="mt-eyebrow">magnitude, not hue — a tint of fg over bg. inverts with the theme. darker = more.</span></div>
+    <div class="grid cols-4" style="grid-template-columns:repeat(5,1fr);">
+      <div class="swatch"><div class="chip mt-ink-0"></div><div class="meta"><span class="mt-mono">--ink-0</span></div></div>
+      <div class="swatch"><div class="chip mt-ink-1"></div><div class="meta"><span class="mt-mono">--ink-1</span></div></div>
+      <div class="swatch"><div class="chip mt-ink-2"></div><div class="meta"><span class="mt-mono">--ink-2</span></div></div>
+      <div class="swatch"><div class="chip mt-ink-3"></div><div class="meta"><span class="mt-mono">--ink-3</span></div></div>
+      <div class="swatch"><div class="chip mt-ink-4"></div><div class="meta"><span class="mt-mono">--ink-4</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============================ TYPE ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">type</span><span class="mt-eyebrow">inter, weights 300 &amp; 400 only. hierarchy from size + tracking + whitespace.</span></div>
+    <div class="specrow"><span class="mt-mono">display</span><span class="mt-display">everything you need, nothing you don’t</span></div>
+    <div class="specrow"><span class="mt-mono">title / 400</span><span class="mt-title">a considered interface</span></div>
+    <div class="specrow"><span class="mt-mono">prose / lg</span><span class="mt-prose" style="margin:0;">prose is set at the lg size and capped at a 560px measure — text is never full-width. the line-height is loose so it reads like a printed page.</span></div>
+    <div class="specrow"><span class="mt-mono">base</span><span style="font-size:var(--text-base); font-weight:300;">base body — descriptions, secondary copy.</span></div>
+    <div class="specrow"><span class="mt-mono">label / .25em</span><span class="mt-label">section label</span></div>
+    <div class="specrow"><span class="mt-mono">emphasis</span><span style="font-size:var(--text-base);">light by default, <span class="mt-em">regular for the one word that matters</span> — never bold.</span></div>
+    <div class="specrow"><span class="mt-mono">mono</span><span class="mt-mono">technical readouts only · capturing · 42</span></div>
+  </section>
+
+  <!-- ============================ SPACING ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">spacing</span><span class="mt-eyebrow">8 / 16 / 32 / 64 / 128. the 8rem section rhythm is the signature.</span></div>
+    <ul class="clean" style="display:flex; flex-direction:column; gap:10px;">
+      <li style="display:flex; align-items:center; gap:var(--space-md);"><span class="mt-mono" style="width:90px;">xs · 8</span><span style="display:block; height:14px; width:var(--space-xs); background:var(--fg);"></span></li>
+      <li style="display:flex; align-items:center; gap:var(--space-md);"><span class="mt-mono" style="width:90px;">sm · 16</span><span style="display:block; height:14px; width:var(--space-sm); background:var(--fg);"></span></li>
+      <li style="display:flex; align-items:center; gap:var(--space-md);"><span class="mt-mono" style="width:90px;">md · 32</span><span style="display:block; height:14px; width:var(--space-md); background:var(--fg);"></span></li>
+      <li style="display:flex; align-items:center; gap:var(--space-md);"><span class="mt-mono" style="width:90px;">lg · 64</span><span style="display:block; height:14px; width:var(--space-lg); background:var(--fg);"></span></li>
+      <li style="display:flex; align-items:center; gap:var(--space-md);"><span class="mt-mono" style="width:90px;">xl · 128</span><span style="display:block; height:14px; width:var(--space-xl); background:var(--accent);"></span></li>
+    </ul>
+  </section>
+
+  <!-- ============================ COMPONENTS ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">components</span><span class="mt-eyebrow">framework-agnostic mt- classes. state via aria / data-active.</span></div>
+
+    <div class="grid cols-2">
+      <!-- buttons -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">buttons</p>
+        <div class="demo">
+          <button class="mt-btn--solid mt-btn">primary</button>
+          <button class="mt-btn">ghost</button>
+          <button class="mt-btn--plain mt-btn">a text link</button>
+        </div>
+      </div>
+      <!-- fields -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">fields</p>
+        <div class="demo col">
+          <label class="mt-field"><span class="mt-label">your name</span><input class="mt-input" placeholder="lowercase, please" /></label>
+          <input class="mt-input--box mt-input" placeholder="ask anything…" />
+        </div>
+      </div>
+      <!-- pills + chips -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">pills &amp; chips</p>
+        <div class="demo">
+          <span class="mt-pill">tag</span>
+          <button class="mt-chip" data-toggle>coding</button>
+          <button class="mt-chip" data-active data-toggle>focused</button>
+          <button class="mt-chip" data-toggle>research</button>
+        </div>
+      </div>
+      <!-- segmented + switch -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">segmented &amp; switch</p>
+        <div class="demo">
+          <div class="mt-segmented" data-seg><button type="button" aria-pressed="true">day</button><button type="button" aria-pressed="false">week</button><button type="button" aria-pressed="false">month</button></div>
+          <button class="mt-switch" data-switch aria-pressed="false" aria-label="toggle"></button>
+          <button class="mt-switch is-on" data-switch aria-pressed="true" aria-label="toggle"></button>
+        </div>
+      </div>
+      <!-- card -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">card</p>
+        <div class="mt-card">
+          <span class="mt-label">journal</span>
+          <p style="margin:0; font-size:var(--text-base); font-weight:300;">the structure is the card — one hairline, no shadow, no radius.</p>
+          <div style="display:flex; gap:var(--space-sm);"><button class="mt-btn">edit</button><button class="mt-btn">regenerate</button></div>
+        </div>
+      </div>
+      <!-- intensity viz -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">intensity viz</p>
+        <div class="demo col">
+          <div class="mt-spark" id="spark"></div>
+          <div style="display:flex; gap:var(--space-md); flex-wrap:wrap;">
+            <span class="mt-statelabel"><i class="mt-ink-1"></i> chilling</span>
+            <span class="mt-statelabel"><i class="mt-ink-2"></i> meeting</span>
+            <span class="mt-statelabel"><i class="mt-ink-3"></i> productive</span>
+            <span class="mt-statelabel"><i class="mt-ink-4"></i> focused</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- chat bubbles -->
+    <div style="margin-top:var(--space-lg);">
+      <p class="mt-eyebrow" style="margin-bottom:10px;">native chat (mobile)</p>
+      <div class="demo col mt-bubbles" style="max-width:520px;">
+        <div class="mt-bubble mt-bubble--you">what did i work on this morning?</div>
+        <div class="mt-bubble mt-bubble--them">heads-down on the 2brn project — two deep-work blocks, one productive stretch.</div>
+      </div>
+    </div>
+
+    <!-- icons -->
+    <div style="margin-top:var(--space-lg);">
+      <p class="mt-eyebrow" style="margin-bottom:10px;">iconography — thin-line inline svg only (stroke 1.6, round caps, no fill)</p>
+      <div class="demo" id="icons" style="font-size:22px; color:var(--muted); gap:var(--space-md);"></div>
+    </div>
+  </section>
+
+  <!-- ============================ NAVIGATION / RESPONSIVE ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">navigation &amp; responsive</span><span class="mt-eyebrow">desktop sidebar → mobile bottom bar (three variants). same destinations.</span></div>
+    <div class="grid cols-2">
+      <!-- sidebar -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">sidebar (desktop)</p>
+        <div class="demo" style="padding:var(--space-md) var(--space-sm);">
+          <nav class="mt-nav" style="width:100%;">
+            <a class="mt-nav-item" href="#" aria-current="page">home</a>
+            <a class="mt-nav-item" href="#">chat</a>
+            <a class="mt-nav-item" href="#">journal</a>
+            <a class="mt-nav-item" href="#">timeline</a>
+            <a class="mt-nav-item" href="#">insights</a>
+          </nav>
+        </div>
+      </div>
+      <!-- bottom nav variants -->
+      <div>
+        <p class="mt-eyebrow" style="margin-bottom:10px;">bottom bar — labeled · icons · text</p>
+        <div class="demo col" style="gap:var(--space-md); padding:var(--space-md);">
+          <nav class="mt-bottomnav mt-bottomnav--labeled" data-nav style="width:100%; border:1px solid var(--rule);"></nav>
+          <nav class="mt-bottomnav mt-bottomnav--icons" data-nav style="width:100%; border:1px solid var(--rule);"></nav>
+          <nav class="mt-bottomnav mt-bottomnav--text" data-nav style="width:100%; border:1px solid var(--rule);"></nav>
+        </div>
+      </div>
+    </div>
+    <p class="mt-prose" style="font-size:var(--text-base); margin-top:var(--space-md);">breakpoints — ≤640 phone (bottom bar), 641–1024 tablet (right panels hidden), ≥1025 desktop. sheets are opaque with a transparent tap-catcher (no scrim); home lives on the wordmark; a “more” sheet holds everything the sidebar can’t.</p>
+  </section>
+
+  <!-- ============================ EXCLUSIONS ============================ -->
+  <section class="guide-section">
+    <div class="guide-head"><span class="mt-label">what minimal_text is not</span></div>
+    <ul class="clean dont mt-prose" style="font-size:var(--text-base); columns:2; column-gap:var(--space-xl);">
+      <li>— a second accent, or accent as decoration</li>
+      <li>— color in the intensity encoding (magnitude only)</li>
+      <li>— images, photos, illustrations, hero art</li>
+      <li>— box-shadow</li>
+      <li>— border-radius (except the 3px pill)</li>
+      <li>— font-weight 700+ / bold</li>
+      <li>— text-transform: uppercase</li>
+      <li>— gradients, rgba() overlays, blur</li>
+      <li>— scroll-triggered animation / bounces / loops</li>
+      <li>— emoji, icon fonts, decorative glyphs</li>
+      <li>— framework UI libraries / utility soup</li>
+    </ul>
+    <p class="mt-eyebrow" style="margin-top:var(--space-lg);">built from restraint — the most important control is the one you don’t add.</p>
+  </section>
+
+</div>
+
+<script>
+  // theme toggle
+  const themeBar = document.getElementById('theme');
+  themeBar.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-theme-set]'); if (!b) return;
+    const v = b.dataset.themeSet;
+    if (v === 'system') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', v);
+    themeBar.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  });
+
+  // chip toggles
+  document.querySelectorAll('[data-toggle]').forEach(c => c.addEventListener('click', () => {
+    c.toggleAttribute('data-active');
+  }));
+  // switches
+  document.querySelectorAll('[data-switch]').forEach(s => s.addEventListener('click', () => {
+    const on = s.getAttribute('aria-pressed') === 'true';
+    s.setAttribute('aria-pressed', String(!on)); s.classList.toggle('is-on', !on);
+  }));
+  // segmented
+  document.querySelectorAll('[data-seg]').forEach(seg => seg.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+
+  // intensity spark
+  const levels = [1,0,2,3,1,4,2,3,4,2,1,3];
+  document.getElementById('spark').innerHTML = levels.map(l => {
+    const h = l === 0 ? 3 : 12 + (l/4)*34;
+    return `<i class="mt-ink-${l===0?0:4}" style="height:${h}px; align-self:end;"></i>`;
+  }).join('');
+
+  // thin-line icon specimens
+  const ICONS = {
+    home:'<path d="M3 9.5 12 3l9 6.5"/><path d="M5 9v11h14V9"/>',
+    chat:'<path d="M4 5h16v10H9l-4 4v-4H4z"/>',
+    search:'<circle cx="11" cy="11" r="6"/><path d="m20 20-4-4"/>',
+    calendar:'<rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 9h16M8 3v4M16 3v4"/>',
+    more:'<circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none"/>',
+    close:'<path d="M6 6l12 12M18 6 6 18"/>',
+    sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>',
+    moon:'<path d="M20 14A8 8 0 0 1 10 4a7 7 0 1 0 10 10z"/>',
+  };
+  const svg = (d) => `<svg class="mt-icon" viewBox="0 0 24 24" style="width:1em;height:1em;stroke-width:1.6;">${d}</svg>`;
+  document.getElementById('icons').innerHTML = Object.values(ICONS).map(svg).join('');
+
+  // bottom-nav specimens
+  const TABS = [['chat','M4 5h16v10H9l-4 4v-4H4z'],['journal','M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z" /><path d="M9 4v16'],['blog','M4 20l1-4L16 5l3 3L8 19z'],['timeline','M12 8v4l3 2" /><circle cx="12" cy="12" r="8'],['insights','M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z']];
+  document.querySelectorAll('[data-nav]').forEach(nav => {
+    nav.innerHTML = TABS.map(([name,d],i) => {
+      const cur = i===3 ? ' aria-current="page"' : '';
+      return `<button class="mt-tab"${cur}><svg class="mt-tab__icon mt-icon" viewBox="0 0 24 24" style="width:20px;height:20px;stroke-width:1.6;"><path d="${d}"/></svg><span class="mt-tab__label">${name}</span></button>`;
+    }).join('');
+  });
+</script>
+</body>
+</html>
