@@ -7,7 +7,7 @@
   var CELL               = 11;
   var SUBCELLS           = 2;
   var GAP                = 5;
-  var LINE_GAP           = 5;
+  var LINE_GAP           = 12;
   var FREEZE_RADIUS      = 90;
   var FLICKER_RATE       = 400;
   var ACCENT_FLICKER_RATE = 800;
@@ -83,9 +83,10 @@
 
   var mouseX = -9999, mouseY = -9999;
   var cells  = [];
-  var cachedRect = null;
-  var cachedFg   = '';
-  var fontStr    = '';
+  var cachedRect   = null;
+  var cachedFg     = '';
+  var cachedAccent = '';
+  var fontStr      = '';
 
   function randChar()       { return CHARS[Math.floor(Math.random() * CHARS.length)]; }
   function randAccentChar() { return ACCENT_CHARS[Math.floor(Math.random() * ACCENT_CHARS.length)]; }
@@ -95,10 +96,16 @@
     return cachedFg;
   }
 
+  function getAccent() {
+    if (!cachedAccent) cachedAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#a23c2e';
+    return cachedAccent;
+  }
+
   function buildCells() {
     cells = [];
     cachedRect = null;
-    cachedFg   = '';
+    cachedFg     = '';
+    cachedAccent = '';
 
     var lines       = SENTENCE.split('\n');
     var longestLine = lines.reduce(function(a, b) { return a.length > b.length ? a : b; });
@@ -182,17 +189,21 @@
     var mx = mouseX - cachedRect.left;
     var my = mouseY - cachedRect.top;
     var r  = canvas._freeze;
-    var fg = getFg();
+    var fg     = getFg();
+    var accent = getAccent();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font         = fontStr;
     ctx.textBaseline = 'top';
-    ctx.fillStyle    = fg;
 
+    var lastColor = '';
     for (var i = 0; i < cells.length; i++) {
-      var a = computeAlpha(cells[i], mx, my, r);
+      var cell = cells[i];
+      var a = computeAlpha(cell, mx, my, r);
       if (ctx.globalAlpha !== a) ctx.globalAlpha = a;
-      ctx.fillText(cells[i].current, cells[i].x, cells[i].y);
+      var color = cell.accent ? accent : fg;          // IDEAS / FREE / BETTER in the accent
+      if (color !== lastColor) { ctx.fillStyle = color; lastColor = color; }
+      ctx.fillText(cell.current, cell.x, cell.y);
     }
     ctx.globalAlpha = 1;
     requestAnimationFrame(draw);
@@ -246,9 +257,9 @@
 
   window.addEventListener('resize', onResize);
 
-  new MutationObserver(function() { cachedFg = ''; })
+  new MutationObserver(function() { cachedFg = ''; cachedAccent = ''; })
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', function() { cachedFg = ''; });
+    .addEventListener('change', function() { cachedFg = ''; cachedAccent = ''; });
 })();

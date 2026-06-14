@@ -22,7 +22,7 @@
       <div class="nav-sep"></div>
       <a href="index.html" class="active">blog</a>
     </nav>
-    <div class="theme-toggle mt-segmented" role="group" aria-label="theme">
+    <div class="theme-toggle">
       <button data-theme="light">light</button>
       <button data-theme="dark">dark</button>
       <button data-theme="system">system</button>
@@ -61,8 +61,10 @@
 
   <main class="main">
     <section id="blog">
-      <span class="section__label">blog</span>
-      <div class="blog__list">
+      <div class="blog__layout">
+        <div class="blog__daily">
+          <span class="section__label">daily</span>
+          <div class="blog__list">
         <a class="blog-entry" href="2026-06-13.html">
           <span class="blog-entry__title">13 june 2026</span>
           <span class="blog-entry__date">saturday</span>
@@ -163,6 +165,12 @@
           <span class="blog-entry__date">saturday</span>
           <span class="blog-entry__excerpt">this is the first post. software is ideas. ideas should be free, for the good of the world.</span>
         </a>
+          </div>
+        </div>
+        <aside class="blog__weekly">
+          <span class="section__label">weekly</span>
+          <p class="blog__weekly-note">a weekly synthesis lands here — one deeper piece, drawn from the week's daily notes.</p>
+        </aside>
       </div>
     </section>
   </main>
