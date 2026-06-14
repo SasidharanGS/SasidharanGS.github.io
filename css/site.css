@@ -291,7 +291,8 @@ section + section { border-top: var(--border-width) solid var(--accent); }
 
 /* ---- Blog: a post ---------------------------------------------------------- */
 .post__header {
-  padding: var(--space-xl) 0 var(--space-lg);
+  max-width: 46rem;
+  padding: 0 0 var(--space-lg);
   margin-bottom: var(--space-lg);
   border-bottom: var(--border-width) solid var(--rule);
 }
@@ -311,7 +312,7 @@ section + section { border-top: var(--border-width) solid var(--accent); }
 }
 
 .post__body {
-  max-width: var(--measure);
+  max-width: 46rem;
   font-size: var(--text-lg);
   font-weight: var(--weight-light);
   line-height: var(--leading-loose);
