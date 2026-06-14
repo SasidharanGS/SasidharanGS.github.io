@@ -183,7 +183,7 @@
     var half = canvas._cell / 2;
     var dx = cell.x + half - mx;
     var dy = cell.y + half - my;
-    return (dx * dx + dy * dy) < r * r ? 1.0 : 0.25;
+    return (dx * dx + dy * dy) < r * r ? 1.0 : 0.4;
   }
 
   function draw() {
@@ -228,6 +228,9 @@
   function scheduleCell(cell) {
     setTimeout(function tick() {
       cell.current = cell.accent ? randAccentChar() : randChar();
+      // red twinkle: on each flicker tick, re-roll whether this capital cell is
+      // red — keeps ~1/3 of the constituent cells red at any instant.
+      if (cell.accent) cell.red = Math.random() < (1 / 3);
       setTimeout(tick, (cell.accent || cell.frozen) ? ACCENT_FLICKER_RATE : FLICKER_RATE);
     }, Math.random() * FLICKER_RATE);
   }

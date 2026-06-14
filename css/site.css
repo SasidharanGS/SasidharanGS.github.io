@@ -159,6 +159,8 @@ section + section { border-top: var(--border-width) solid var(--accent); }
   gap: var(--space-xs);
   margin-bottom: var(--space-sm);
 }
+/* tags read in the foreground colour, not faded grey */
+.project-card__tags .mt-pill { color: var(--fg); }
 
 .project-card__links {
   display: flex;
